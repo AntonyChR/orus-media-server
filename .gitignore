@@ -1,0 +1,5 @@
+temp/
+app
+*.db
+*.sh
+**/*.mp4
