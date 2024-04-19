@@ -3,3 +3,4 @@ app
 *.db
 *.sh
 **/*.mp4
+**/*.toml
