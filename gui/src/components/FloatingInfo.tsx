@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { TitleInfo } from '../types/TitleInfo';
-import star from '../../public/star.svg';
+import star from '/star.svg';
 
 interface FloatingInfoProps {
     titleInfo: TitleInfo;
@@ -9,19 +9,7 @@ interface FloatingInfoProps {
 const FloatingInfo: FC<FloatingInfoProps> = ({ titleInfo }) => {
     return (
         <div
-            className='text-white 
-            absolute 
-            top-9 
-            right-[-20%] 
-            w-[250px] 
-            h-[350px] 
-            z-10 
-            p-3
-            space-y-2
-            rounded-md
-            bg-gray-950 
-            border
-            border-gray-900'
+            className='text-white absolute top-9 right-[-20%] w-[250px] h-[350px] z-10 p-3 space-y-2 rounded-md bg-gray-950 border border-gray-900'
         >
             <p>{titleInfo.Plot}</p>
             <p>
