@@ -2,7 +2,6 @@ import { FileInfo } from '../types/FileInfo';
 import { TitleInfo } from '../types/TitleInfo';
 import { ENDPOINTS } from './endpoints';
 
-
 export const getAllTitles = async (): Promise<TitleInfo[] | null> => {
     try {
         const resp = await fetch(ENDPOINTS.media.allTitles);
@@ -14,7 +13,7 @@ export const getAllTitles = async (): Promise<TitleInfo[] | null> => {
 };
 
 export const getMovieSrc = async (titleId: number): Promise<string | null> => {
-    const url = `${ENDPOINTS.media.videoFileInfo}/${titleId}`
+    const url = `${ENDPOINTS.media.videoFileInfo}/${titleId}`;
     try {
         const resp = await fetch(url);
         const data: FileInfo[] = await resp.json();
@@ -23,6 +22,19 @@ export const getMovieSrc = async (titleId: number): Promise<string | null> => {
         return null;
     }
 };
+export const getVideoChapterSrc = (videoId: string): string => {
+    return `${ENDPOINTS.media.videoSrc}/${videoId}`;
+};
 
-
-
+export const getChapters = async (
+    titleId: number
+): Promise<FileInfo[] | null> => {
+    const url = `${ENDPOINTS.media.videoFileInfo}/${titleId}`;
+    try {
+        const resp = await fetch(url);
+        const data: FileInfo[] = await resp.json();
+        return data;
+    } catch (error) {
+        return null;
+    }
+};
