@@ -82,7 +82,7 @@ func main() {
 	corsConfig.AllowCredentials = true
 
 	router.Use(cors.New(corsConfig))
-	router.Use(middlewares.Redirect())
+	router.Use(middlewares.RedirectToRoot())
 	controller := controllers.NewMediaInfoController(
 		titleInfoService,
 		fileInfoService,

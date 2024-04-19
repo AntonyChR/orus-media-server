@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Redirect() gin.HandlerFunc {
+func RedirectToRoot() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		url := ctx.Request.URL.Path
