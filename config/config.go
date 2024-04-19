@@ -13,7 +13,7 @@ import (
 type Config struct {
 	DB_PATH   string `toml:"DB_PATH"`
 	PORT      string `toml:"PORT"`
-	MEDIA_DIR string `toml:"MEDIA_FILES"`
+	MEDIA_DIR string `toml:"MEDIA_DIR"`
 	API_KEY   string `toml:"API_KEY"`
 }
 
