@@ -74,6 +74,7 @@ func main() {
 	go watcher.ListenMediaEvents()
 
 	// API REST
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
 	corsConfig := cors.DefaultConfig()
@@ -118,6 +119,7 @@ func main() {
 	//
 	// To solve this we can use a middleware:
 	router.Use(static.Serve("/", static.EmbedFolder(staticContent, "gui/dist")))
+	//router.Static("/subt", "./subt")
 
 	err = router.Run(config.PORT)
 

@@ -17,7 +17,7 @@ const AppRouter: FC = () => {
             <Route path='/movie/:movieId' element={<ConcreteMovie />} />
 
             <Route path='/series' element={<Series />} />
-            <Route path='/series/:seriesId' element={<ConcreteSeries />} />
+            <Route path='/series/:seriesId/:chapterId' element={<ConcreteSeries />} />
             
             <Route path='/config' element={<Config />} />
         </Routes>

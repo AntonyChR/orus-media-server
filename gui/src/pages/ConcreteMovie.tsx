@@ -34,7 +34,7 @@ const ConcreteMovie = () => {
                 <div>
                     <h1 className='text-white'>{titleInfo.Title}</h1>
                     <div className='flex justify-center w h-full'>
-                        <VideoPlayer className='w-[80vw] h-[80vh]' src={videoSrc} />
+                        <VideoPlayer className='w-[80vw] h-[80vh]' src={videoSrc} poster={titleInfo.Poster} />
                     </div>
                 </div>
             )}

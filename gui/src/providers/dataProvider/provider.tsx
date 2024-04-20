@@ -16,6 +16,7 @@ interface StateProps {
 
 export const DataProvider: FC<Props> = ({ children }) => {
     const navigate = useNavigate();
+
     const [titles, setTitles] = useState<StateProps>({
         movies: [],
         series: [],
@@ -47,22 +48,19 @@ export const DataProvider: FC<Props> = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        const i = setInterval(() => {
-            saveLastRoute(window.location.pathname);
-        }, 7000);
-        return ()=>{
-            clearInterval(i)
+        const pathName = window.location.pathname
+        if (pathName != '/movies' && pathName != '/') {
+            saveLastRoute(pathName);
         }
-    }, []);
+    }, [window.location.pathname]);
 
     useEffect(() => {
         const lastRoute = getLastRoute();
+        if (!lastRoute) return;
 
-        if (lastRoute) {
-            const now: any = new Date();
-            if (now - lastRoute.timeStamp <= 10_000) {
-                navigate(lastRoute.route);
-            }
+        const now: any = new Date();
+        if (now - lastRoute.timeStamp <= 15_000) {
+            navigate(lastRoute.route);
         }
     }, []);
 

@@ -1,11 +1,14 @@
-//const API_URI = new URL(window.location.href).host
-const API_URI = "http://localhost:3002"
+import { isDevMode } from '../lib/isDevMode';
+
+const API_URI = isDevMode
+    ? import.meta.env.VITE_API_URI
+    : window.location.origin;
 
 export const ENDPOINTS = {
-    media :{
-        allTitles: API_URI+'/api/info/titles/all',
-        videoFileInfo: API_URI+'/api/info/files/title',
-        videoSrc: API_URI+'/api/info/video'
+    media: {
+        allTitles: API_URI + '/api/media/titles/all',
+        videoFileInfo: API_URI + '/api/media/files',
+        videoSrc: API_URI + '/api/media/video',
     },
-    config :{}
-}
+    config: {},
+};
