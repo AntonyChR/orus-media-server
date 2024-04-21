@@ -55,9 +55,8 @@ const ConcreteSeries = () => {
                     navigate(`/series/${titleInfo!.ID}/${chapters[i + 1].ID}`);
                 }
             }
-        })
-        
-    }
+        });
+    };
 
     const onPrevChapter = () => {
         chapters?.forEach((c, i) => {
@@ -66,8 +65,8 @@ const ConcreteSeries = () => {
                     navigate(`/series/${titleInfo!.ID}/${chapters[i - 1].ID}`);
                 }
             }
-        })
-    }
+        });
+    };
 
     useEffect(() => {
         return () => {
@@ -81,9 +80,19 @@ const ConcreteSeries = () => {
                 <div className='grid grid-cols-6'>
                     <div className='text-white col-span-6 flex justify-between'>
                         <h1 className='font-bold text-xl'>{titleInfo.Title}</h1>
-                        <div className='justify-end'>
-                            <button onClick={onPrevChapter}>prev</button>
-                            <button  onClick={onNextChapter}>next</button>
+                        <div className='justify-end flex gap-x-3'>
+                            <button
+                                className='bg-red-800 px-2 rounded-md'
+                                onClick={onPrevChapter}
+                            >
+                                Prev
+                            </button>
+                            <button
+                                className='bg-red-800 px-2 rounded-md'
+                                onClick={onNextChapter}
+                            >
+                                Next
+                            </button>
                         </div>
                     </div>
                     <div className='max-h-[80vh]'>
@@ -97,7 +106,7 @@ const ConcreteSeries = () => {
                                                 isActive
                                                     ? 'bg-red-700'
                                                     : 'bg-gray-900'
-                                            } hover:bg-red-700 h-max`
+                                            } hover:bg-red-900 h-max`
                                         }
                                         to={`/series/${titleInfo.ID}/${c.ID}`}
                                     >
