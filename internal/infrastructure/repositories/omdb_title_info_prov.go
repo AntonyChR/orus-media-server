@@ -11,18 +11,22 @@ import (
 	models "github.com/AntonyChR/orus-media-server/internal/domain/models"
 )
 
+// NewOmdbProvider creates a new instance of OmdbApiTitleInfoProv with the provided base URL API and API key.
 func NewOmdbProvider(baseUrlApi, apiKey string) *OmdbApiTitleInfoProv {
 	return &OmdbApiTitleInfoProv{
 		ApiUrl: baseUrlApi + "/?apikey=" + apiKey,
 	}
 }
 
+// OmdbApiTitleInfoProv represents a provider for obtaining movie information using the OMDb API.
 // The OMDb API is a RESTful web service to obtain movie information.
-// https://www.omdbapi.com/
+// More information can be found at: https://www.omdbapi.com/
 type OmdbApiTitleInfoProv struct {
 	ApiUrl string
 }
 
+// Search searches for movie information based on the provided file name.
+// It returns a models.TitleInfo struct containing the movie information, or an error if the search fails.
 func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error) {
 	var info models.TitleInfo
 
@@ -69,8 +73,8 @@ func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error)
 	return info, nil
 }
 
-// extract valid parameters (title, year) from filename.
-// E.g. from file name: "godzilla-2014.mp4" returns ["godzilla","2014"]
+// extractSearchParams extracts valid parameters (title, year) from the provided file name.
+// For example, from the file name "godzilla-2014.mp4", it returns ["godzilla","2014"].
 func extractSearchParams(fileName string) []string {
 	nameWithoutExt := strings.Split(fileName, ".")[0]
 
