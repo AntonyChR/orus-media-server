@@ -34,7 +34,7 @@ type MediaInfoSyncService struct {
 }
 
 func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
-	mediaFileInf, err := m.FileExplorerService.GetInfoAboutMediaFiles(m.Path)
+	mediaFileInf, err := m.FileExplorerService.ScanDir(m.Path)
 
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
 		if f.IsDir {
 			titleInfo, titleInfofErr := m.TitleInfoProvider.Search(f.Name)
 			titleInfo.Folder = f.Path
-			seriesFileInfo, fileInfoErr := m.FileExplorerService.GetInfoAboutMediaFiles(f.Path)
+			seriesFileInfo, fileInfoErr := m.FileExplorerService.ScanDir(f.Path)
 
 			if fileInfoErr != nil {
 				log.Printf("Error getting info about: \"%s\", %s\n", f.Name, fileInfoErr.Error())

@@ -19,7 +19,7 @@ type MediaFileExplorerImpl struct{}
 
 // Gets information about all files within the "path" and returns an array of models.FileInfo
 // If the file is inside the subdirectory, the name must be in a format like: "s1e1.mp4".
-func (f *MediaFileExplorerImpl) GetInfoAboutMediaFiles(path string) ([]*models.FileInfo, error) {
+func (f *MediaFileExplorerImpl) ScanDir(path string) ([]*models.FileInfo, error) {
 	files, err := os.ReadDir(path)
 
 	if err != nil {

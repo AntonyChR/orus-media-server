@@ -123,7 +123,7 @@ func (w *WatchMediafileEvents) WatchDirectoryEvents() {
 	}
 
 	// add subdiretctories
-	fileInfo, _ := w.FileExplorerService.GetInfoAboutMediaFiles(w.WatchedDirectoryPath)
+	fileInfo, _ := w.FileExplorerService.ScanDir(w.WatchedDirectoryPath)
 
 	for _, f := range fileInfo {
 		if f.IsDir {
