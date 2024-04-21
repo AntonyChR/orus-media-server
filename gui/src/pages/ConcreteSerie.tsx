@@ -31,39 +31,63 @@ const ConcreteSeries = () => {
 
     useEffect(() => {
         if (titleInfo) {
-            getChapters(titleInfo.ID).then((resp) => setChapters(resp));
+            getChapters(titleInfo.ID).then((resp) => {
+                if (!resp) return;
+                const orderedChapters = resp.sort((a, b) => {
+                    if (a.Season > b.Season) {
+                        return 1;
+                    } else if (a.Season < b.Season) {
+                        return -1;
+                    } else {
+                        return a.Episode - b.Episode;
+                    }
+                });
+                setChapters(orderedChapters);
+            });
         }
     }, [titleInfo]);
+    useEffect(()=>{
+        return ()=>{
+            setChapters(null)
+            setVideoSrc('')
+        }
+    },[])
     return (
         <>
             {titleInfo && (
-                <div className='grid grid-cols-6 h-full'>
-                    <div className='border border-white max-h-full overflow-auto'>
-                        <h1 className='text-white'>{titleInfo.Title}</h1>
-                        <ul className='text-white'>
+                <div className='grid grid-cols-6'>
+                    <div className='max-h-[80vh]'>
+                        <div className='text-white grid grid-cols-1 bg-gray-900 overflow-y-auto h-full'>
                             {chapters &&
                                 chapters.map((c) => (
-                                    <li key={c.Name} className='bg-slate-950'>
-                                        <NavLink
-                                            className={({ isActive }) =>
-                                                `${
-                                                    isActive
-                                                        ? 'bg-red-700'
-                                                        : 'bg-gray-950'
-                                                } hover:bg-red-700`
-                                            }
-                                            to={`/series/${titleInfo.ID}/${c.ID}`}
-                                        >
-                                            capitulo {c.Episode}, season:{' '}
-                                            {c.Season}
-                                        </NavLink>
-                                    </li>
+                                    <NavLink
+                                        key={c.Name}
+                                        className={({ isActive }) =>
+                                            `${
+                                                isActive
+                                                    ? 'bg-red-700'
+                                                    : 'bg-gray-900'
+                                            } hover:bg-red-700 h-max`
+                                        }
+                                        to={`/series/${titleInfo.ID}/${c.ID}`}
+                                    >
+                                        Chapter {c.Episode} - Season: {c.Season}
+                                    </NavLink>
                                 ))}
-                        </ul>
+                        </div>
                     </div>
-                    <div className='col-span-5 flex justify-center'>
+                    <div className='col-span-5 flex justify-center flex-col'>
+                        <div className='text-white flex'>
+                            <h1 className='font-bold text-xl'>
+                                {titleInfo.Title}
+                            </h1>
+                            <div className='justify-end'>
+                                <button>prev</button>
+                                <button>next</button>
+                            </div>
+                        </div>
                         <VideoPlayer
-                            className='max-h-[80vh] w-full'
+                            className='h-[80vh]'
                             src={videoSrc}
                             poster={titleInfo.Poster}
                         />
