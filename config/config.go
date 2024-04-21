@@ -23,8 +23,8 @@ type Config struct {
 // The function returns the loaded or default configuration and any error that occurred.
 func LoadConfig() (Config, error) {
 	path := "config.toml"
-	if ConfigFileExists(path) {
-		config, err := ReadConfig(path)
+	if configFileExists(path) {
+		config, err := readConfig(path)
 		return config, err
 	}
 
@@ -39,18 +39,18 @@ func LoadConfig() (Config, error) {
 		API_KEY:   "",
 	}
 
-	err := Save(defaultConfig, path)
+	err := save(defaultConfig, path)
 
 	return defaultConfig, err
 
 }
 
-func ConfigFileExists(path string) bool {
+func configFileExists(path string) bool {
 	_, err := os.Stat(path)
 	return err == nil
 }
 
-func ReadConfig(configFilePath string) (Config, error) {
+func readConfig(configFilePath string) (Config, error) {
 	var config Config
 	content, err := os.ReadFile(configFilePath)
 
@@ -66,7 +66,7 @@ func ReadConfig(configFilePath string) (Config, error) {
 	return config, nil
 }
 
-func Save(config Config, path string) error {
+func save(config Config, path string) error {
 	buf := new(bytes.Buffer)
 	if err := toml.NewEncoder(buf).Encode(config); err != nil {
 		return err

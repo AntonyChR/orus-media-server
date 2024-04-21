@@ -8,7 +8,7 @@ import (
 func TestCreateConfigFile(t *testing.T) {
 	config := Config{DB_PATH: "./testPath", PORT: ":2000", API_KEY: "test_key"}
 	tmpFilePath := "tmp.toml"
-	if err := Save(config, tmpFilePath); err != nil {
+	if err := save(config, tmpFilePath); err != nil {
 		t.Errorf("Error saving config file: %s", err)
 	}
 
@@ -27,11 +27,11 @@ func TestCreateConfigFile(t *testing.T) {
 func TestReadConfigFile(t *testing.T) {
 	config := Config{DB_PATH: "./testPath", PORT: ":2000", API_KEY: "test_key"}
 	tmpFilePath := "tmp2.toml"
-	if err := Save(config, tmpFilePath); err != nil {
+	if err := save(config, tmpFilePath); err != nil {
 		t.Errorf("Error saving config file: %s", err)
 	}
 
-	writedConfig, err := ReadConfig(tmpFilePath)
+	writedConfig, err := readConfig(tmpFilePath)
 	if err != nil {
 		t.Errorf("Error reading file: %s", err)
 	}
