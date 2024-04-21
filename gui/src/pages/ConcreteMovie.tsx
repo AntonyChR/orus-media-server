@@ -5,7 +5,7 @@ import VideoPlayer from '../components/VideoPlayer';
 import { getMovieSrc } from '../data_fetching/data_fetching';
 
 const ConcreteMovie = () => {
-    const [videoSrc, setVideoSrc] = useState("")
+    const [videoSrc, setVideoSrc] = useState('');
 
     const { movieId } = useParams();
     const { movies } = useContext(DataContext);
@@ -18,15 +18,21 @@ const ConcreteMovie = () => {
         }
     }
 
-    useEffect(()=>{
-        if(!titleInfo)return;
-        getMovieSrc(titleInfo?.ID).then((resp:string |null)=>{
-            if (resp){
+    useEffect(() => {
+        if (!titleInfo) return;
+        getMovieSrc(titleInfo?.ID).then((resp: string | null) => {
+            if (resp) {
                 //console.log("video id",resp)
-                setVideoSrc(String(resp))
+                setVideoSrc(String(resp));
             }
-        })
-    },[titleInfo])
+        });
+    }, [titleInfo]);
+
+    useEffect(() => {
+        return () => {
+            setVideoSrc('');
+        };
+    }, []);
 
     return (
         <div>
@@ -34,7 +40,11 @@ const ConcreteMovie = () => {
                 <div>
                     <h1 className='text-white'>{titleInfo.Title}</h1>
                     <div className='flex justify-center w h-full'>
-                        <VideoPlayer className='w-[80vw] h-[80vh]' src={videoSrc} poster={titleInfo.Poster} />
+                        <VideoPlayer
+                            className='w-[80vw] h-[80vh]'
+                            src={videoSrc}
+                            poster={titleInfo.Poster}
+                        />
                     </div>
                 </div>
             )}

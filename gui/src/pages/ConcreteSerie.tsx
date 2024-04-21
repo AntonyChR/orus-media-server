@@ -48,6 +48,12 @@ const ConcreteSeries = () => {
         }
     }, [titleInfo]);
 
+    useEffect(() => {
+        if (chapters && chapterId == '0') {
+            navigate(`/series/${titleInfo!.ID}/${chapters![0].ID}`);
+        }
+    }, [chapters]);
+
     const onNextChapter = () => {
         chapters?.forEach((c, i) => {
             if (c.ID == Number(chapterId)) {

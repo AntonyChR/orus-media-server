@@ -8,7 +8,7 @@ interface VideoPlayerProps {
 const VideoPlayer: FC<VideoPlayerProps> = ({ src, className, poster }) => {
     return (
         <>
-            <video className={className} src={src} controls poster={poster} />
+            <video className={className} src={src} controls poster={poster}/>
             {/* <track src="/subt/sub.vtt" label="Spanish" kind="subtitles" srcLang="es" default/>  */}
         </>
     );

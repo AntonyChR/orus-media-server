@@ -13,7 +13,11 @@ const TitleList: FC<TitleListProps> = ({ titles }) => {
             <ul className='grid grid-cols-2 md:grid-cols-4 justify-items-center gap-y-8'>
                 {titles.map((title) => (
                     <li key={title.imdbID}>
-                        <Link to={`/${title.Type}/${title.ID}/${title.Type=='series'?1:''}`}>
+                        <Link
+                            to={`/${title.Type}/${title.ID}/${
+                                title.Type == 'series' ? 0 : ''
+                            }`}
+                        >
                             <TitleCard titleInfo={title} />
                         </Link>
                     </li>
