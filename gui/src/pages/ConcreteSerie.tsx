@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { DataContext } from '../providers/dataProvider/context';
 import {
     getChapters,
@@ -14,6 +14,7 @@ const ConcreteSeries = () => {
 
     const { seriesId, chapterId } = useParams();
     const { series } = useContext(DataContext);
+    const navigate = useNavigate();
     let titleInfo = null;
 
     for (let i = 0; i < series.length; i++) {
@@ -46,16 +47,45 @@ const ConcreteSeries = () => {
             });
         }
     }, [titleInfo]);
-    useEffect(()=>{
-        return ()=>{
-            setChapters(null)
-            setVideoSrc('')
-        }
-    },[])
+
+    const onNextChapter = () => {
+        chapters?.forEach((c, i) => {
+            if (c.ID == Number(chapterId)) {
+                if (i < chapters.length - 1) {
+                    navigate(`/series/${titleInfo!.ID}/${chapters[i + 1].ID}`);
+                }
+            }
+        })
+        
+    }
+
+    const onPrevChapter = () => {
+        chapters?.forEach((c, i) => {
+            if (c.ID == Number(chapterId)) {
+                if (i > 0) {
+                    navigate(`/series/${titleInfo!.ID}/${chapters[i - 1].ID}`);
+                }
+            }
+        })
+    }
+
+    useEffect(() => {
+        return () => {
+            setChapters(null);
+            setVideoSrc('');
+        };
+    }, []);
     return (
         <>
             {titleInfo && (
                 <div className='grid grid-cols-6'>
+                    <div className='text-white col-span-6 flex justify-between'>
+                        <h1 className='font-bold text-xl'>{titleInfo.Title}</h1>
+                        <div className='justify-end'>
+                            <button onClick={onPrevChapter}>prev</button>
+                            <button  onClick={onNextChapter}>next</button>
+                        </div>
+                    </div>
                     <div className='max-h-[80vh]'>
                         <div className='text-white grid grid-cols-1 bg-gray-900 overflow-y-auto h-full'>
                             {chapters &&
@@ -77,15 +107,6 @@ const ConcreteSeries = () => {
                         </div>
                     </div>
                     <div className='col-span-5 flex justify-center flex-col'>
-                        <div className='text-white flex'>
-                            <h1 className='font-bold text-xl'>
-                                {titleInfo.Title}
-                            </h1>
-                            <div className='justify-end'>
-                                <button>prev</button>
-                                <button>next</button>
-                            </div>
-                        </div>
                         <VideoPlayer
                             className='h-[80vh]'
                             src={videoSrc}
