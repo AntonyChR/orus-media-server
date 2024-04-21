@@ -70,3 +70,10 @@ func getSeasonAndEpisode(fileName string) (uint, uint) {
 	episode, _ := strconv.ParseUint(episodeStr, 10, 32)
 	return uint(season), uint(episode)
 }
+
+func CreateDirIfNotExist(path string) error {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return os.MkdirAll(path, 0755)
+	}
+	return nil
+}

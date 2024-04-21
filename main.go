@@ -51,6 +51,8 @@ func main() {
 
 	fileExporer := infrastructure.NewMediaFileExplorer()
 
+	infrastructure.CreateDirIfNotExist(config.MEDIA_DIR)
+
 	// Initialize services
 	mediaInfoSyncService := services.NewMediaInfoSyncService(
 		config.MEDIA_DIR,

@@ -34,7 +34,7 @@ func LoadConfig() (Config, error) {
 	defaultConfig := Config{
 		DB_PATH:   "./database.db",
 		PORT:      ":3002",
-		MEDIA_DIR: "./temp",
+		MEDIA_DIR: "./media",
 		API_KEY:   "",
 	}
 
@@ -78,14 +78,12 @@ func Save(config Config, path string) error {
 }
 
 func findAvailablePort() string {
-	// create listener on a random port
 	listener, err := net.Listen("tcp", ":0")
 	if err != nil {
 		panic(err)
 	}
 	defer listener.Close()
 
-	// get system assigned port
 	addr := listener.Addr().(*net.TCPAddr)
 	return fmt.Sprintf(":%d", addr.Port)
 }
