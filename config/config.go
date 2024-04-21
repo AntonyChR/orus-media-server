@@ -17,6 +17,9 @@ type Config struct {
 	API_KEY   string `toml:"API_KEY"`
 }
 
+// LoadConfig reads the configuration file and returns the configuration
+// if the configuration file is not found, it creates a default configuration
+// and saves it to the config file
 func LoadConfig() (Config, error) {
 	path := "config.toml"
 	if ConfigFileExists(path) {
