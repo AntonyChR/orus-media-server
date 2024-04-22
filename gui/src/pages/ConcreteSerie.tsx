@@ -52,6 +52,7 @@ const ConcreteSeries = () => {
         if (chapters && chapterId == '0') {
             navigate(`/series/${titleInfo!.ID}/${chapters![0].ID}`);
         }
+    // eslint-disable-next-line
     }, [chapters]);
 
     const onNextChapter = () => {

@@ -52,16 +52,18 @@ export const DataProvider: FC<Props> = ({ children }) => {
         if (pathName != '/movies' && pathName != '/') {
             saveLastRoute(pathName);
         }
+    // eslint-disable-next-line
     }, [window.location.pathname]);
 
     useEffect(() => {
         const lastRoute = getLastRoute();
         if (!lastRoute) return;
 
-        const now: any = new Date();
-        if (now - lastRoute.timeStamp <= 15_000) {
+        const now = new Date();
+        if (Number(now) - Number(lastRoute.timeStamp) <= 15_000) {
             navigate(lastRoute.route);
         }
+    // eslint-disable-next-line
     }, []);
 
     return (
