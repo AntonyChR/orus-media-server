@@ -1,5 +1,5 @@
 interface LastRoute {
-    timeStamp: any;
+    timeStamp: Date;
     route: string;
 }
 
@@ -16,6 +16,6 @@ export const getLastRoute = (): LastRoute | null => {
     if (!data) {
         return null;
     }
-    const lastRoute = JSON.parse(data);
-    return { ...lastRoute, timeStamp: new Date(lastRoute.timeStamp) };
+    const lastRoute:LastRoute = JSON.parse(data);
+    return { route: lastRoute.route, timeStamp: new Date(lastRoute.timeStamp) };
 };
