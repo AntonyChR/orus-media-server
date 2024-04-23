@@ -108,7 +108,7 @@ const ConcreteSeries = () => {
                         </div>
                     </div>
                     <div className='max-h-[80vh]'>
-                        <div className='text-white grid grid-cols-1 bg-gray-900 overflow-y-auto h-full'>
+                        <div className='text-white flex flex-col bg-gray-900 overflow-y-auto h-full'>
                             {chapters &&
                                 chapters.map((c) => (
                                     <NavLink
@@ -118,7 +118,7 @@ const ConcreteSeries = () => {
                                                 isActive
                                                     ? 'bg-red-700'
                                                     : 'bg-gray-900'
-                                            } hover:bg-red-900 h-max`
+                                            } hover:bg-red-900`
                                         }
                                         to={`/series/${titleInfo.ID}/${c.ID}`}
                                     >
