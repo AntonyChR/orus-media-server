@@ -52,27 +52,32 @@ const ConcreteSeries = () => {
         if (chapters && chapterId == '0') {
             navigate(`/series/${titleInfo!.ID}/${chapters![0].ID}`);
         }
-    // eslint-disable-next-line
+        // eslint-disable-next-line
     }, [chapters]);
 
     const onNextChapter = () => {
-        chapters?.forEach((c, i) => {
-            if (c.ID == Number(chapterId)) {
+        if (!chapters) return;
+
+        for (let i = 0; i < chapters?.length; i++) {
+            if (chapters[i].ID == Number(chapterId)) {
                 if (i < chapters.length - 1) {
                     navigate(`/series/${titleInfo!.ID}/${chapters[i + 1].ID}`);
                 }
+                break;
             }
-        });
+        }
     };
 
     const onPrevChapter = () => {
-        chapters?.forEach((c, i) => {
-            if (c.ID == Number(chapterId)) {
+        if (!chapters) return;
+        for (let i = 0; i < chapters.length; i++) {
+            if (chapters[i].ID == Number(chapterId)) {
                 if (i > 0) {
                     navigate(`/series/${titleInfo!.ID}/${chapters[i - 1].ID}`);
                 }
+                break;
             }
-        });
+        }
     };
 
     useEffect(() => {
