@@ -1,0 +1,4 @@
+DB_PATH = "./database.db"
+PORT = ":3002"
+MEDIA_DIR = "./media"
+API_KEY = "512346de9"
