@@ -32,19 +32,19 @@ func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error)
 
 	params := extractSearchParams(fileName)
 
-	if len(params) == 0 {
+	if params[0] == "" {
 		return info, errors.New("invalid filename format")
 	}
 	year := ""
 	title := "&t=" + strings.ReplaceAll(params[0], " ", "%20")
 
-	if len(params) >= 2 {
+	if params[1] != "" {
 		year = "&y=" + params[1]
 	}
 
 	url := m.ApiUrl + title + year
 
-	log.Println("Get: ", url)
+	log.Println("Search: ", title, ", year: ", year)
 	resp, err := http.Get(url)
 
 	if err != nil {
@@ -73,10 +73,35 @@ func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error)
 	return info, nil
 }
 
-// extractSearchParams extracts valid parameters (title, year) from the provided file name.
-// For example, from the file name "godzilla-2014.mp4", it returns ["godzilla","2014"].
+// extractSearchParams extracts the search parameters from the given file name.
+// It removes certain strings from the file name and extracts the title and year
+// information from it. The search parameters are returned as a slice of strings,
+// where the first element is the title and the second element is the year.
+//
+// Example:
+//
+//	fileName := "Movie (2021).1080p.bluray.mkv"
+//	searchParams := extractSearchParams(fileName)
+//	// searchParams will be ["Movie", "2021"]
 func extractSearchParams(fileName string) []string {
-	nameWithoutExt := strings.Split(fileName, ".")[0]
+	toRemove := []string{"1080p", "720p", "5.1", "2.0", "bluray", "webrip", "web-dl", "brrip", "dvdrip", "dvdscr", "hdrip", "hdtv", "wmv"}
 
-	return strings.Split(nameWithoutExt, "-")
+	clearedName := fileName
+	for _, r := range toRemove {
+		clearedName = strings.ReplaceAll(clearedName, r, "")
+	}
+
+	nameWithoutExt := strings.SplitN(clearedName, ".", 2)[0]
+
+	// Extract year and title from the file name
+	var year, title string
+	if strings.Contains(nameWithoutExt, "(") && strings.Contains(nameWithoutExt, ")") {
+		splitName := strings.SplitN(nameWithoutExt, "(", 2)
+		title = strings.TrimSpace(splitName[0])
+		year = strings.SplitN(splitName[1], ")", 2)[0]
+	} else {
+		title = strings.TrimSpace(nameWithoutExt)
+	}
+
+	return []string{title, year}
 }
