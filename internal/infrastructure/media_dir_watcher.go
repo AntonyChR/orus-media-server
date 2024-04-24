@@ -207,7 +207,7 @@ func (w *WatchMediafileEvents) ListenMediaEvents() []string {
 				fileInfo, _ := w.FileExplorerService.GetFileInfo(event.FilePath)
 				fileInfo.TitleId = titleInfo.ID
 
-				err = w.FileInfoRepository.Save(fileInfo)
+				err = w.FileInfoRepository.Save(&fileInfo)
 				if err != nil {
 					log.Println(err)
 				}
@@ -225,7 +225,7 @@ func (w *WatchMediafileEvents) ListenMediaEvents() []string {
 			}
 
 			fileInfo.TitleId = titleInfo.ID
-			err = w.FileInfoRepository.Save(fileInfo)
+			err = w.FileInfoRepository.Save(&fileInfo)
 			if err != nil {
 				log.Println(err)
 			}

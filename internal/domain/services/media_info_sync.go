@@ -63,7 +63,7 @@ func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
 						fileInfo.TitleId = titleInfo.ID
 					}
 
-					m.FileInfoService.Save(fileInfo)
+					m.FileInfoService.Save(&fileInfo)
 				}
 			}
 
@@ -79,7 +79,7 @@ func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
 					f.TitleId = titleInfo.ID
 				}
 			}
-			if err := m.FileInfoService.Save(f); err != nil {
+			if err := m.FileInfoService.Save(&f); err != nil {
 				return err
 			}
 		}

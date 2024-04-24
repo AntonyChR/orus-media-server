@@ -19,14 +19,14 @@ type MediaFileExplorerImpl struct{}
 
 // Gets information about all files within the "path" and returns an array of models.FileInfo
 // If the file is inside the subdirectory, the name must be in a format like: "s1e1.mp4".
-func (f *MediaFileExplorerImpl) ScanDir(path string) ([]*models.FileInfo, error) {
+func (f *MediaFileExplorerImpl) ScanDir(path string) ([]models.FileInfo, error) {
 	files, err := os.ReadDir(path)
 
 	if err != nil {
-		return []*models.FileInfo{}, err
+		return []models.FileInfo{}, err
 	}
 
-	info := []*models.FileInfo{}
+	info := []models.FileInfo{}
 	for _, f := range files {
 		season, episode := getSeasonAndEpisode(f.Name())
 		tmp := models.FileInfo{
@@ -36,19 +36,19 @@ func (f *MediaFileExplorerImpl) ScanDir(path string) ([]*models.FileInfo, error)
 			Season:  season,
 			Episode: episode,
 		}
-		info = append(info, &tmp)
+		info = append(info, tmp)
 	}
 	return info, nil
 }
 
-func (f *MediaFileExplorerImpl) GetFileInfo(path string) (*models.FileInfo, error) {
+func (f *MediaFileExplorerImpl) GetFileInfo(path string) (models.FileInfo, error) {
 	fileData, err := os.Stat(path)
 	if err != nil {
-		return nil, err
+		return models.FileInfo{}, err
 	}
 	season, episode := getSeasonAndEpisode(fileData.Name())
 
-	return &models.FileInfo{
+	return models.FileInfo{
 		Name:    fileData.Name(),
 		Path:    path,
 		IsDir:   fileData.IsDir(),
