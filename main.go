@@ -37,6 +37,10 @@ func main() {
 		log.Fatal(err)
 	}
 
+	if err = infrastructure.CreateDirIfNotExist(config.MEDIA_DIR); err != nil {
+		log.Fatal(err)
+	}
+
 	// Instance repositories
 
 	sqliteFileInfoRepo := repositoryImplementations.NewSqliteFileInfoRepo(sqliteDb)
@@ -51,16 +55,20 @@ func main() {
 
 	fileExporer := infrastructure.NewMediaFileExplorer()
 
-	infrastructure.CreateDirIfNotExist(config.MEDIA_DIR)
-
-	// Initialize services
 	mediaInfoSyncService := services.NewMediaInfoSyncService(
 		config.MEDIA_DIR,
 		fileExporer,
 		omdbInfoProvider,
 		titleInfoService,
-
 		fileInfoService,
+	)
+
+	eventHanlder := infrastructure.NewMediaEventHandlerService(
+		config.MEDIA_DIR,
+		fileInfoService,
+		titleInfoService,
+		fileExporer,
+		omdbInfoProvider,
 	)
 
 	// watch media file directory events
@@ -68,8 +76,7 @@ func main() {
 		config.MEDIA_DIR,
 		fileExporer,
 		omdbInfoProvider,
-		sqliteTitleInfoRepo,
-		sqliteFileInfoRepo,
+		eventHanlder,
 	)
 
 	go watcher.WatchDirectoryEvents()
@@ -86,6 +93,7 @@ func main() {
 
 	router.Use(cors.New(corsConfig))
 	router.Use(middlewares.RedirectToRoot())
+
 	controller := controllers.NewMediaInfoController(
 		titleInfoService,
 		fileInfoService,
@@ -121,7 +129,6 @@ func main() {
 	//
 	// To solve this we can use a middleware:
 	router.Use(static.Serve("/", static.EmbedFolder(staticContent, "gui/dist")))
-	//router.Static("/subt", "./subt")
 
 	err = router.Run(config.PORT)
 
