@@ -10,5 +10,7 @@ export const ENDPOINTS = {
         videoFileInfo: API_URI + '/api/media/files',
         videoSrc: API_URI + '/api/media/video',
     },
-    config: {},
+    config: {
+        resetDb: API_URI + '/api/manage/reset'
+    },
 };
