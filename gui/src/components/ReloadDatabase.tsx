@@ -1,5 +1,5 @@
 import { resetDatabase } from '../data_fetching/data_fetching';
-import { useWrapFetch } from '../hooks/useFetch';
+import { useWrapFetch } from '../hooks/useWrapFetch';
 
 import spinner from '/spinner.svg';
 
