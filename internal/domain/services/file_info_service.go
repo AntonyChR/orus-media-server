@@ -34,7 +34,11 @@ func (f *FileInfoService) GetByName(name string) (models.FileInfo, error) {
 	return fileInfo, err
 }
 
-func (f *FileInfoService) DeleteByTitleId(titleId string) error {
+func (f *FileInfoService) DeleteById(id uint) error {
+	return f.FileInfoRepository.DeleteBy("id", id)
+}
+
+func (f *FileInfoService) DeleteByTitleId(titleId uint) error {
 	return f.FileInfoRepository.DeleteBy("title_id", titleId)
 }
 

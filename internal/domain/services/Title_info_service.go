@@ -45,6 +45,11 @@ func (t *TitleInfoService) GetByImdbId(imdbId string) (models.TitleInfo, error) 
 func (t *TitleInfoService) Save(titleInfo *models.TitleInfo) error {
 	return t.TitleInfoRepository.Save(titleInfo)
 }
+
+func (t *TitleInfoService) DeleteById(id uint) error {
+	return t.TitleInfoRepository.DeleteBy("id", id)
+}
+
 func (t *TitleInfoService) Reset() error {
 	err := t.TitleInfoRepository.DropDatabase()
 	if err != nil {
