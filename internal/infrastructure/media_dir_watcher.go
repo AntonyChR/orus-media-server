@@ -4,11 +4,9 @@ import (
 	"errors"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 
 	domain "github.com/AntonyChR/orus-media-server/internal/domain"
-	repositories "github.com/AntonyChR/orus-media-server/internal/domain/repositories"
 	fsnotify "github.com/fsnotify/fsnotify"
 )
 
@@ -16,16 +14,15 @@ func NewMediaDirWatcher(
 	mediaDir string,
 	fileExplorerService domain.MediaFileExplorer,
 	titleInfoProvider domain.TitleInfoProvider,
-	titleInfoRepository repositories.TitleInfoRepository,
-	fileInfoRepository repositories.FileInfoRepository,
+	eventHandler EventHandlerService,
+
 ) *WatchMediafileEvents {
 	return &WatchMediafileEvents{
-		WatchedDirectoryPath: mediaDir,
-		EventChannel:         make(chan MediaChangeEvent),
-		FileExplorerService:  fileExplorerService,
-		TitleInfoProvider:    titleInfoProvider,
-		TitleInfoRepository:  titleInfoRepository,
-		FileInfoRepository:   fileInfoRepository,
+		WatchedMediaDir:     mediaDir,
+		EventChannel:        make(chan MediaChangeEvent),
+		FileExplorerService: fileExplorerService,
+		TitleInfoProvider:   titleInfoProvider,
+		EventHandlerService: eventHandler,
 	}
 }
 
@@ -42,13 +39,20 @@ type MediaChangeEvent struct {
 	Error    error
 }
 
+type EventHandlerService interface {
+	HandleNewDir(event MediaChangeEvent) error
+	HandleRemoveDir(event MediaChangeEvent) error
+	HandleNewFile(event MediaChangeEvent) error
+	HandleRemoveFile(event MediaChangeEvent) error
+}
+
 type WatchMediafileEvents struct {
-	WatchedDirectoryPath string
-	EventChannel         chan MediaChangeEvent
-	TitleInfoProvider    domain.TitleInfoProvider
-	FileExplorerService  domain.MediaFileExplorer
-	TitleInfoRepository  repositories.TitleInfoRepository
-	FileInfoRepository   repositories.FileInfoRepository
+	WatchedMediaDir     string
+	EventChannel        chan MediaChangeEvent
+	EventHandlerService EventHandlerService
+	FileExplorerService domain.MediaFileExplorer
+
+	TitleInfoProvider domain.TitleInfoProvider
 }
 
 func (w *WatchMediafileEvents) WatchDirectoryEvents() {
@@ -56,7 +60,7 @@ func (w *WatchMediafileEvents) WatchDirectoryEvents() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Watchig: ", w.WatchedDirectoryPath)
+	log.Println("Watchig: ", w.WatchedMediaDir)
 	defer watcher.Close()
 
 	// Start listening for events.
@@ -78,15 +82,15 @@ func (w *WatchMediafileEvents) WatchDirectoryEvents() {
 					// If the creation of a folder within a subdirectory is detected, it is ignored
 					//
 					//	media directory/
-					//	|____movie1-1992.mp4
-					//	|____movie2-2007.mp4
-					//	|____tv show - 1994/  -> subdir: added to event watch list
+					//	|____movie1 (1992).mp4
+					//	|____movie2 (2007).mp4
+					//	|____tv show (1994)/  -> subdir: added to event watch list
 					//	| |____s2e23.mp4
 					//	| |____s1e1.mp4
 					//	| |____subdir/        -> inSubdir (invalid): this directory is ignored
 					//
 					if isDir(event.Name) {
-						if !isInSubdir(w.WatchedDirectoryPath, event.Name) {
+						if !isInSubdir(w.WatchedMediaDir, event.Name) {
 							log.Println("Watchig: ", event.Name)
 							watcher.Add(event.Name)
 							mediaEvent.Type = NEW_DIR
@@ -97,7 +101,7 @@ func (w *WatchMediafileEvents) WatchDirectoryEvents() {
 
 				case fsnotify.Remove == event.Op || fsnotify.Rename == event.Op:
 					if isDir(event.Name) {
-						if !isInSubdir(w.WatchedDirectoryPath, event.Name) {
+						if !isInSubdir(w.WatchedMediaDir, event.Name) {
 							log.Println("Remove directory from the watch list: ", event.Name)
 							watcher.Remove(event.Name)
 							mediaEvent.Type = REMOVE_DIR
@@ -117,13 +121,13 @@ func (w *WatchMediafileEvents) WatchDirectoryEvents() {
 	}()
 
 	// Add main path.
-	err = watcher.AddWith(w.WatchedDirectoryPath)
+	err = watcher.AddWith(w.WatchedMediaDir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// add subdiretctories
-	fileInfo, _ := w.FileExplorerService.ScanDir(w.WatchedDirectoryPath)
+	fileInfo, _ := w.FileExplorerService.ScanDir(w.WatchedMediaDir)
 
 	for _, f := range fileInfo {
 		if f.IsDir {
@@ -135,126 +139,41 @@ func (w *WatchMediafileEvents) WatchDirectoryEvents() {
 	<-make(chan struct{})
 }
 
-//FIXME:The value of the 'path' is very ambiguous, in several cases it requires
-//      the use of 'filepath.Base()' or 'filepath.Dir()', which makes the code
-//      even less readable."
-
-//TODO: create service to encapsulate creation/remove data from database and not use repositories instances directly
-//REFACTOR: create service to encapsulate creation/remove data from database and not use repositories instances directly
-
 func (w *WatchMediafileEvents) ListenMediaEvents() []string {
 	for {
 		event := <-w.EventChannel
+
 		if event.Error != nil {
-			log.Println("Error: ", event.Error)
+			log.Println(event.Error)
 			continue
 		}
+
 		switch event.Type {
 
 		case NEW_DIR:
-			fileName := filepath.Base(event.FilePath)
-			titleInfo, err := w.TitleInfoProvider.Search(fileName)
-			if err != nil {
-				log.Println(err)
-				continue
-			}
 
-			titleInfo.Folder = event.FilePath
-
-			localInfo, _ := w.TitleInfoRepository.GetOneBy("imdb_id", titleInfo.ImdbID)
-
-			if localInfo.ID != 0 {
-				log.Printf("the title information:\"%s\" already exists\n", localInfo.Title)
-				continue
-			}
-
-			err = w.TitleInfoRepository.Save(&titleInfo)
-			if err != nil {
+			if err := w.EventHandlerService.HandleNewDir(event); err != nil {
 				log.Println(err)
 			}
-			//TODO: check if the folder contains files, if so, iterate over them and get the information
+
 		case REMOVE_DIR:
-			titleInfo, err := w.TitleInfoRepository.GetOneBy("folder", event.FilePath)
-			if err != nil {
+
+			if err := w.EventHandlerService.HandleRemoveDir(event); err != nil {
 				log.Println(err)
-				continue
 			}
 
-			err = w.FileInfoRepository.DeleteBy("title_id", titleInfo.ID)
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-
-			err = w.TitleInfoRepository.Delete(titleInfo)
-			if err != nil {
-				log.Println(err)
-				continue
-			}
 		case NEW_FILE:
-			dir := filepath.Dir(event.FilePath)
-			if dir == filepath.Base(w.WatchedDirectoryPath) {
-				titleInfo, err := w.TitleInfoProvider.Search(filepath.Base(event.FilePath))
-				if err != nil {
-					log.Println(err)
-					continue
-				}
-				err = w.TitleInfoRepository.Save(&titleInfo)
-				if err != nil {
-					log.Println(err)
-					continue
-				}
-				fileInfo, _ := w.FileExplorerService.GetFileInfo(event.FilePath)
-				fileInfo.TitleId = titleInfo.ID
 
-				err = w.FileInfoRepository.Save(&fileInfo)
-				if err != nil {
-					log.Println(err)
-				}
-				continue
-			}
-
-			fileInfo, err := w.FileExplorerService.GetFileInfo(event.FilePath)
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-			titleInfo, err := w.TitleInfoRepository.GetOneBy("folder", dir)
-			if err != nil || titleInfo.ID == 0 {
-				continue
-			}
-
-			fileInfo.TitleId = titleInfo.ID
-			err = w.FileInfoRepository.Save(&fileInfo)
-			if err != nil {
+			if err := w.EventHandlerService.HandleNewFile(event); err != nil {
 				log.Println(err)
 			}
 
 		case REMOVE_FILE:
-			dir := filepath.Dir(event.FilePath)
-			if dir == filepath.Base(w.WatchedDirectoryPath) {
-				fileInfo, err := w.FileInfoRepository.GetOneBy("name", filepath.Base(event.FilePath))
-				if err != nil {
-					log.Println(err)
-					continue
-				}
-				titleInfo, err := w.TitleInfoRepository.GetOneBy("id", fileInfo.TitleId)
 
-				if err != nil {
-					log.Println(err)
-					continue
-				}
-
-				w.FileInfoRepository.Delete(fileInfo)
-				w.TitleInfoRepository.Delete(titleInfo)
-				continue
-			}
-			fileInfo, err := w.FileInfoRepository.GetOneBy("name", filepath.Base(event.FilePath))
-			if err != nil {
+			if err := w.EventHandlerService.HandleRemoveFile(event); err != nil {
 				log.Println(err)
-				continue
 			}
-			w.FileInfoRepository.Delete(fileInfo)
+
 		}
 	}
 
@@ -278,5 +197,4 @@ func isInSubdir(mainPath, subdirPath string) bool {
 	splMainPath := strings.Split(mainPath, "/")
 	splSubdir := strings.Split(subdirPath, "/")
 	return len(splSubdir)-len(splMainPath) == 1
-
 }
