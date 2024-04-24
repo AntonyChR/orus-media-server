@@ -38,3 +38,19 @@ export const getChapters = async (
         return null;
     }
 };
+
+export const resetDatabase = async (): Promise<Error | null>=> {
+    try{
+        const resp = await fetch(ENDPOINTS.config.resetDb)
+        if (resp.status != 200){
+            return new Error(`Bad request: ${resp.status} - ${resp.statusText}`)
+        }
+        return null
+    }catch(error){
+        if (error instanceof Error){
+            return error
+        }
+        return new Error(`Request error: ${error}`)
+    }
+
+}
