@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 
 	domain "github.com/AntonyChR/orus-media-server/internal/domain"
@@ -47,11 +48,9 @@ func (s *MediaEventHandlerService) HandleNewDir(event MediaChangeEvent) error {
 		return fmt.Errorf("the title information:\"%s\" already exists", localInfo.Title)
 	}
 
-	if err = s.TitleInfoService.Save(&titleInfo); err != nil {
-		return err
-	}
+	err = s.TitleInfoService.Save(&titleInfo)
 
-	return nil
+	return err
 }
 
 func (s *MediaEventHandlerService) HandleRemoveDir(event MediaChangeEvent) error {
@@ -66,11 +65,9 @@ func (s *MediaEventHandlerService) HandleRemoveDir(event MediaChangeEvent) error
 		return err
 	}
 
-	if err = s.TitleInfoService.DeleteById(titleInfo.ID); err != nil {
-		return err
-	}
+	err = s.TitleInfoService.DeleteById(titleInfo.ID)
 
-	return nil
+	return err
 }
 
 func (s *MediaEventHandlerService) HandleNewFile(event MediaChangeEvent) error {
@@ -79,17 +76,21 @@ func (s *MediaEventHandlerService) HandleNewFile(event MediaChangeEvent) error {
 	// if the file is in the root directory of the watched media directory that means it is a movie
 	// otherwise it is the chapter of a series
 	if dir == filepath.Base(s.WatchedMediaDir) {
-		titleInfo, err := s.TitleInfoProvider.Search(filepath.Base(event.FilePath))
+		fileInfo, err := s.FileExplorerService.GetFileInfo(event.FilePath)
+
 		if err != nil {
 			return err
 		}
 
-		// save the title information, the ID is created that will serve to associate this information with the video file
-		if err = s.TitleInfoService.Save(&titleInfo); err != nil {
-			return err
-		}
+		titleInfo, err := s.TitleInfoProvider.Search(filepath.Base(event.FilePath))
 
-		fileInfo, _ := s.FileExplorerService.GetFileInfo(event.FilePath)
+		if err == nil {
+			if err := s.TitleInfoService.Save(&titleInfo); err != nil {
+				return err
+			}
+		} else {
+			log.Println(err)
+		}
 
 		// associate the file with the title information
 		fileInfo.TitleId = titleInfo.ID
@@ -132,7 +133,7 @@ func (s *MediaEventHandlerService) HandleRemoveFile(event MediaChangeEvent) erro
 		}
 
 		s.FileInfoService.DeleteById(fileInfo.ID)
-		s.TitleInfoService.DeleteById(titleInfo.ID)
+		err = s.TitleInfoService.DeleteById(titleInfo.ID)
 		return err
 	}
 
