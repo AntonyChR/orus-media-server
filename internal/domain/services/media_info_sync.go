@@ -42,7 +42,7 @@ func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
 
 	for _, f := range mediaFileInf {
 		if f.IsDir {
-			titleInfo, titleInfofErr := m.TitleInfoProvider.Search(f.Name)
+			titleInfo, titleInfoErr := m.TitleInfoProvider.Search(f.Name)
 			titleInfo.Folder = f.Path
 			seriesFileInfo, fileInfoErr := m.FileExplorerService.ScanDir(f.Path)
 
@@ -50,7 +50,7 @@ func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
 				log.Printf("Error getting info about: \"%s\", %s\n", f.Name, fileInfoErr.Error())
 			}
 
-			if titleInfofErr == nil {
+			if titleInfoErr == nil {
 				err := m.TitleInfoService.Save(&titleInfo)
 				if err != nil {
 					log.Println(err)
@@ -59,7 +59,7 @@ func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
 
 			if fileInfoErr == nil {
 				for _, fileInfo := range seriesFileInfo {
-					if titleInfofErr == nil {
+					if titleInfoErr == nil {
 						fileInfo.TitleId = titleInfo.ID
 					}
 

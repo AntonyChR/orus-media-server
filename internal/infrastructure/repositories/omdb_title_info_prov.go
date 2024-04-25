@@ -44,7 +44,7 @@ func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error)
 
 	url := m.ApiUrl + title + year
 
-	log.Println("Search: ", title, ", year: ", year)
+	log.Println("GET: ", url)
 	resp, err := http.Get(url)
 
 	if err != nil {
@@ -66,11 +66,7 @@ func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error)
 
 	err = json.Unmarshal(bodyBytes, &info)
 
-	if err != nil {
-		return info, err
-	}
-
-	return info, nil
+	return info, err 
 }
 
 // extractSearchParams extracts the search parameters from the given file name.
