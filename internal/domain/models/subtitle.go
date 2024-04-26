@@ -2,7 +2,7 @@ package models
 
 import "gorm.io/gorm"
 
-type SubtitleFile struct {
+type Subtitle struct {
 	gorm.Model
 	Path      string `json:"Path"`
 	Lang      string `json:"Lang"`
