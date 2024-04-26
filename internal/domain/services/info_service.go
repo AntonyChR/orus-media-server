@@ -12,7 +12,7 @@ type InfoService struct {
 	TitleInfoProvider   domain.TitleInfoProvider
 	FileExplorerService domain.MediaFileExplorer
 	TitleInfoRepository repositories.TitleInfoRepository
-	FileInfoRepository  repositories.FileInfoRepository
+	VideoRepository     repositories.VideoRepository
 }
 
 func (i *InfoService) NewSerie(folderPath string) error {

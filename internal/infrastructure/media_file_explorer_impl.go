@@ -17,41 +17,54 @@ func NewMediaFileExplorer() *MediaFileExplorerImpl {
 // Implements diferent methods to get file information
 type MediaFileExplorerImpl struct{}
 
-// Gets information about all files within the "path" and returns an array of models.FileInfo
+// Gets information about all files within the "path" and returns an array of models.Video
 // If the file is inside the subdirectory, the name must be in a format like: "s1e1.mp4".
 func (f *MediaFileExplorerImpl) ScanDir(path string) ([]models.FileInfo, error) {
 	files, err := os.ReadDir(path)
 
+	info := []models.FileInfo{}
+
 	if err != nil {
-		return []models.FileInfo{}, err
+		return info, err
 	}
 
-	info := []models.FileInfo{}
 	for _, f := range files {
+		var tmp models.FileInfo
+
+		if f.IsDir() {
+			tmp = models.FileInfo{
+				Name:  f.Name(),
+				Path:  filepath.Join(path, f.Name()),
+				IsDir: true,
+			}
+			info = append(info, tmp)
+			continue
+		}
 		season, episode := getSeasonAndEpisode(f.Name())
-		tmp := models.FileInfo{
-			Name:    f.Name(),
-			Path:    filepath.Join(path, f.Name()),
-			IsDir:   f.IsDir(),
-			Season:  season,
-			Episode: episode,
+		tmp = models.FileInfo{
+			Video: models.Video{
+				Name:    f.Name(),
+				Path:    filepath.Join(path, f.Name()),
+				Season:  season,
+				Episode: episode,
+			},
+			IsDir: false,
 		}
 		info = append(info, tmp)
 	}
 	return info, nil
 }
 
-func (f *MediaFileExplorerImpl) GetFileInfo(path string) (models.FileInfo, error) {
+func (f *MediaFileExplorerImpl) GetVideoInfo(path string) (models.Video, error) {
 	fileData, err := os.Stat(path)
 	if err != nil {
-		return models.FileInfo{}, err
+		return models.Video{}, err
 	}
 	season, episode := getSeasonAndEpisode(fileData.Name())
 
-	return models.FileInfo{
+	return models.Video{
 		Name:    fileData.Name(),
 		Path:    path,
-		IsDir:   fileData.IsDir(),
 		Season:  season,
 		Episode: episode,
 	}, nil

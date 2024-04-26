@@ -14,20 +14,20 @@ import (
 )
 
 func NewMediaInfoController(
-	fileInfoService *services.FileInfoService,
+	videoService *services.VideoService,
 	titleInfoService *services.TitleInfoService,
 	mediaInfoSync *services.MediaInfoSyncService,
 ) *MediaInfoController {
 	return &MediaInfoController{
 		TitleInfoService: titleInfoService,
-		FileInfoService:  fileInfoService,
+		VideoService:     videoService,
 		MediaInfoSync:    mediaInfoSync,
 	}
 }
 
 type MediaInfoController struct {
 	TitleInfoService *services.TitleInfoService
-	FileInfoService  *services.FileInfoService
+	VideoService     *services.VideoService
 	MediaInfoSync    *services.MediaInfoSyncService
 }
 
@@ -59,8 +59,8 @@ func (m *MediaInfoController) GetAllTitlesInfo(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, data)
 }
-func (m *MediaInfoController) GetAllFilesInfo(ctx *gin.Context) {
-	data, err := m.FileInfoService.GetAll()
+func (m *MediaInfoController) GetAllVideos(ctx *gin.Context) {
+	data, err := m.VideoService.GetAll()
 	if err != nil {
 		ctx.String(http.StatusNotFound, "Not found")
 		return
@@ -68,7 +68,7 @@ func (m *MediaInfoController) GetAllFilesInfo(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 
-func (m *MediaInfoController) GetFileInfoByTitleId(ctx *gin.Context) {
+func (m *MediaInfoController) GetVideoByTitleId(ctx *gin.Context) {
 	titleIdStr := ctx.Param("titleId")
 	if titleIdStr == "" {
 		ctx.String(http.StatusBadRequest, "Title id is required: /files/title/:titleId")
@@ -82,7 +82,7 @@ func (m *MediaInfoController) GetFileInfoByTitleId(ctx *gin.Context) {
 		return
 	}
 
-	data, err := m.FileInfoService.GetByTitleId(uint(titleId))
+	data, err := m.VideoService.GetByTitleId(uint(titleId))
 	if err != nil {
 		ctx.String(http.StatusNotFound, "Not found")
 		return
@@ -91,7 +91,7 @@ func (m *MediaInfoController) GetFileInfoByTitleId(ctx *gin.Context) {
 }
 
 func (m *MediaInfoController) ResetDatabase(ctx *gin.Context) {
-	err := m.FileInfoService.Reset()
+	err := m.VideoService.Reset()
 	if err != nil {
 		log.Println(err)
 		ctx.String(http.StatusBadGateway, "Server error")
@@ -126,7 +126,7 @@ func (m *MediaInfoController) StreamVideo(ctx *gin.Context) {
 		return
 	}
 
-	videoInfo, err := m.FileInfoService.GetByVideoId(uint(videoId))
+	videoInfo, err := m.VideoService.GetByVideoId(uint(videoId))
 
 	if err != nil {
 		ctx.String(http.StatusNotFound, "Video not found")

@@ -11,14 +11,14 @@ func NewMediaInfoSyncService(
 	path string,
 	fileExplorerService domain.MediaFileExplorer,
 	titleInfoProvider domain.TitleInfoProvider,
-	fileInfoService *FileInfoService,
+	videoService *VideoService,
 	titleInfoService *TitleInfoService,
 ) *MediaInfoSyncService {
 	return &MediaInfoSyncService{
 		Path:                path,
 		FileExplorerService: fileExplorerService,
 		TitleInfoProvider:   titleInfoProvider,
-		FileInfoService:     fileInfoService,
+		VideoService:        videoService,
 		TitleInfoService:    titleInfoService,
 	}
 }
@@ -29,57 +29,58 @@ type MediaInfoSyncService struct {
 	FileExplorerService domain.MediaFileExplorer
 	TitleInfoProvider   domain.TitleInfoProvider
 
-	FileInfoService  *FileInfoService
+	VideoService     *VideoService
 	TitleInfoService *TitleInfoService
 }
 
 func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
-	mediaFileInf, err := m.FileExplorerService.ScanDir(m.Path)
+	mediaFiles, err := m.FileExplorerService.ScanDir(m.Path)
 
 	if err != nil {
 		return err
 	}
 
-	for _, f := range mediaFileInf {
-		if f.IsDir {
-			titleInfo, titleInfoErr := m.TitleInfoProvider.Search(f.Name)
-			titleInfo.Folder = f.Path
-			seriesFileInfo, fileInfoErr := m.FileExplorerService.ScanDir(f.Path)
+	for _, file := range mediaFiles {
+		if file.IsDir {
+			titleInfo, searchErr := m.TitleInfoProvider.Search(file.Name)
+			titleInfo.Folder = file.Path
+			seriesFileInfo, scanErr := m.FileExplorerService.ScanDir(file.Path)
 
-			if fileInfoErr != nil {
-				log.Printf("Error getting info about: \"%s\", %s\n", f.Name, fileInfoErr.Error())
+			if scanErr != nil {
+				log.Printf("Error getting info about: \"%s\", %s\n", file.Name, scanErr.Error())
 			}
 
-			if titleInfoErr == nil {
-				err := m.TitleInfoService.Save(&titleInfo)
-				if err != nil {
+			if searchErr == nil {
+				if err := m.TitleInfoService.Save(&titleInfo); err != nil {
 					log.Println(err)
 				}
 			}
 
-			if fileInfoErr == nil {
+			if scanErr == nil {
 				for _, fileInfo := range seriesFileInfo {
-					if titleInfoErr == nil {
-						fileInfo.TitleId = titleInfo.ID
+					video := fileInfo.Video
+					if searchErr == nil {
+						video.TitleId = titleInfo.ID
 					}
 
-					m.FileInfoService.Save(&fileInfo)
+					m.VideoService.Save(&video)
 				}
 			}
 
 		} else {
-			titleInfo, err := m.TitleInfoProvider.Search(f.Name)
-			titleInfo.Folder = filepath.Dir(f.Path)
+			video := file.Video
+			titleInfo, err := m.TitleInfoProvider.Search(video.Name)
+			titleInfo.Folder = filepath.Dir(video.Path)
 			if err != nil {
 				log.Println(err)
 			} else {
 				if err = m.TitleInfoService.Save(&titleInfo); err != nil { // Create record and asign ID value
 					log.Println(err)
 				} else {
-					f.TitleId = titleInfo.ID
+					video.TitleId = titleInfo.ID
 				}
 			}
-			if err := m.FileInfoService.Save(&f); err != nil {
+			if err := m.VideoService.Save(&video); err != nil {
 				return err
 			}
 		}

@@ -12,14 +12,14 @@ import (
 func NewMediaEventHandlerService(
 	watchedMediaDir string,
 	titleInfoService *services.TitleInfoService,
-	fileInfoService *services.FileInfoService,
+	videoService *services.VideoService,
 	fileExplorerService domain.MediaFileExplorer,
 	titleInfoProvider domain.TitleInfoProvider,
 ) *MediaEventHandlerService {
 	return &MediaEventHandlerService{
 		WatchedMediaDir:     watchedMediaDir,
 		TitleInfoService:    titleInfoService,
-		FileInfoService:     fileInfoService,
+		videoService:        videoService,
 		FileExplorerService: fileExplorerService,
 		TitleInfoProvider:   titleInfoProvider,
 	}
@@ -28,7 +28,7 @@ func NewMediaEventHandlerService(
 type MediaEventHandlerService struct {
 	WatchedMediaDir     string
 	TitleInfoService    *services.TitleInfoService
-	FileInfoService     *services.FileInfoService
+	videoService        *services.VideoService
 	FileExplorerService domain.MediaFileExplorer
 	TitleInfoProvider   domain.TitleInfoProvider
 }
@@ -61,7 +61,7 @@ func (s *MediaEventHandlerService) HandleRemoveDir(event MediaChangeEvent) error
 	}
 
 	// delete all the files associated with the title information
-	if err = s.FileInfoService.DeleteByTitleId(titleInfo.ID); err != nil {
+	if err = s.videoService.DeleteByTitleId(titleInfo.ID); err != nil {
 		return err
 	}
 
@@ -76,7 +76,7 @@ func (s *MediaEventHandlerService) HandleNewFile(event MediaChangeEvent) error {
 	// if the file is in the root directory of the watched media directory that means it is a movie
 	// otherwise it is the chapter of a series
 	if dir == filepath.Base(s.WatchedMediaDir) {
-		fileInfo, err := s.FileExplorerService.GetFileInfo(event.FilePath)
+		videoInfo, err := s.FileExplorerService.GetVideoInfo(event.FilePath)
 
 		if err != nil {
 			return err
@@ -93,13 +93,13 @@ func (s *MediaEventHandlerService) HandleNewFile(event MediaChangeEvent) error {
 		}
 
 		// associate the file with the title information
-		fileInfo.TitleId = titleInfo.ID
+		videoInfo.TitleId = titleInfo.ID
 
-		err = s.FileInfoService.Save(&fileInfo)
+		err = s.videoService.Save(&videoInfo)
 		return err
 	}
 
-	fileInfo, err := s.FileExplorerService.GetFileInfo(event.FilePath)
+	video, err := s.FileExplorerService.GetVideoInfo(event.FilePath)
 	if err != nil {
 		return err
 	}
@@ -108,8 +108,8 @@ func (s *MediaEventHandlerService) HandleNewFile(event MediaChangeEvent) error {
 		return err
 	}
 
-	fileInfo.TitleId = titleInfo.ID
-	err = s.FileInfoService.Save(&fileInfo)
+	video.TitleId = titleInfo.ID
+	err = s.videoService.Save(&video)
 	return err
 
 }
@@ -120,30 +120,30 @@ func (s *MediaEventHandlerService) HandleRemoveFile(event MediaChangeEvent) erro
 	// if the file is in the root directory of the watched media directory that means it is a movie
 	if dir == filepath.Base(s.WatchedMediaDir) {
 
-		fileInfo, err := s.FileInfoService.GetByName(filepath.Base(event.FilePath))
+		video, err := s.videoService.GetByName(filepath.Base(event.FilePath))
 
 		if err != nil {
 			return err
 		}
 
-		titleInfo, err := s.TitleInfoService.GetById(fileInfo.TitleId)
+		titleInfo, err := s.TitleInfoService.GetById(video.TitleId)
 
 		if err != nil {
 			return err
 		}
 
-		s.FileInfoService.DeleteById(fileInfo.ID)
+		s.videoService.DeleteById(video.ID)
 		err = s.TitleInfoService.DeleteById(titleInfo.ID)
 		return err
 	}
 
-	fileInfo, err := s.FileInfoService.GetByName(filepath.Base(event.FilePath))
+	video, err := s.videoService.GetByName(filepath.Base(event.FilePath))
 
 	if err != nil {
 		return err
 	}
 
-	err = s.FileInfoService.DeleteById(fileInfo.ID)
+	err = s.videoService.DeleteById(video.ID)
 
 	return err
 }
