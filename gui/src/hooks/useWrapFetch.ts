@@ -1,12 +1,19 @@
 import { useState } from 'react';
 
 /**
- * Custom hook that wraps a fetcher function and handles the state of the fetch operation.
- * @template T The type of data returned by the fetcher function.
- * @param {() => Promise<T>} fetcher The fetcher function that returns a Promise of type T.
- * @returns {Object} An object containing the data, loading state, error, and a function to make the request.
+ * Custom hook that wraps a fetcher function and returns the data, loading state and error.
+ * @param fetcher - Function that fetches the data.
+ * @returns data - The fetched data.
+ * @returns loading - Whether the fetch is in progress.
+ * @returns error - The error that occurred during the fetch.
+ * @returns makeRequest - Function that triggers the fetch.
  */
-export function useWrapFetch<T>(fetcher: () => Promise<T>) {
+export function useWrapFetch<T>(fetcher: () => Promise<T>):{
+    data: T | null;
+    loading: boolean;
+    error: Error | null;
+    makeRequest: ()=>void;
+} {
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
