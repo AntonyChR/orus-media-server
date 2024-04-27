@@ -17,11 +17,13 @@ func NewMediaInfoController(
 	videoService *services.VideoService,
 	titleInfoService *services.TitleInfoService,
 	mediaInfoSync *services.MediaInfoSyncService,
+	subtitleService *services.SubtitleService,
 ) *MediaInfoController {
 	return &MediaInfoController{
 		TitleInfoService: titleInfoService,
 		VideoService:     videoService,
 		MediaInfoSync:    mediaInfoSync,
+		SubtitleService:  subtitleService,
 	}
 }
 
@@ -29,6 +31,7 @@ type MediaInfoController struct {
 	TitleInfoService *services.TitleInfoService
 	VideoService     *services.VideoService
 	MediaInfoSync    *services.MediaInfoSyncService
+	SubtitleService  *services.SubtitleService
 }
 
 func (m *MediaInfoController) GetSeries(ctx *gin.Context) {
@@ -61,6 +64,15 @@ func (m *MediaInfoController) GetAllTitlesInfo(ctx *gin.Context) {
 }
 func (m *MediaInfoController) GetAllVideos(ctx *gin.Context) {
 	data, err := m.VideoService.GetAll()
+	if err != nil {
+		ctx.String(http.StatusNotFound, "Not found")
+		return
+	}
+	ctx.JSON(http.StatusOK, data)
+}
+
+func (m *MediaInfoController) GetAllSubtitles(ctx *gin.Context) {
+	data, err := m.SubtitleService.GetAll()
 	if err != nil {
 		ctx.String(http.StatusNotFound, "Not found")
 		return
@@ -113,7 +125,19 @@ func (m *MediaInfoController) ResetDatabase(ctx *gin.Context) {
 		return
 	}
 
-	ctx.String(http.StatusOK, "")
+	if err := m.SubtitleService.Reset(); err != nil {
+		log.Println(err)
+		ctx.String(http.StatusBadGateway, "Server error")
+		return
+	}
+
+	if err := m.MediaInfoSync.ScanSubtitles(); err != nil {
+		log.Println(err)
+		ctx.String(http.StatusBadGateway, "Server error")
+		return
+	}
+
+	ctx.String(http.StatusOK, "Database reseted")
 
 }
 

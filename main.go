@@ -3,8 +3,9 @@ package main
 import (
 	"embed"
 	"log"
+	"net/http"
 
-	"github.com/AntonyChR/orus-media-server/config"
+	config "github.com/AntonyChR/orus-media-server/config"
 	controllers "github.com/AntonyChR/orus-media-server/internal/delivery/controllers"
 	middlewares "github.com/AntonyChR/orus-media-server/internal/delivery/middlewares"
 	services "github.com/AntonyChR/orus-media-server/internal/domain/services"
@@ -31,27 +32,29 @@ func main() {
 		log.Fatal(err)
 	}
 
+	if err := infrastructure.CheckDirectories(config.MEDIA_DIR, config.SUBTITLE_DIR); err != nil {
+		log.Fatal(err)
+	}
+
 	sqliteDb, err := gorm.Open(sqlite.Open(config.DB_PATH), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err = infrastructure.CreateDirIfNotExist(config.MEDIA_DIR); err != nil {
-		log.Fatal(err)
-	}
-
 	// Instance repositories
 
-	sqliteFileInfoRepo := repositoryImplementations.NewSqliteFileInfoRepo(sqliteDb)
+	sqliteVideoRepo := repositoryImplementations.NewSqliteVideoRepo(sqliteDb)
+	sqliteSubtitleRepo := repositoryImplementations.NewSqliteSubtitleRepo(sqliteDb)
 	sqliteTitleInfoRepo := repositoryImplementations.NewSqliteTitleInfoRepo(sqliteDb)
 
 	omdbInfoProvider := repositoryImplementations.NewOmdbProvider("http://www.omdbapi.com", config.API_KEY)
 
 	// services
 
-	fileInfoService := services.NewTitleInfoService(sqliteTitleInfoRepo)
-	titleInfoService := services.NewFileInfoService(sqliteFileInfoRepo)
+	videoService := services.NewVideoService(sqliteVideoRepo)
+	subtitleService := services.NewSubtitleService(sqliteSubtitleRepo)
+	titleInfoService := services.NewTitleInfoService(sqliteTitleInfoRepo)
 
 	fileExporer := infrastructure.NewMediaFileExplorer()
 
@@ -59,14 +62,15 @@ func main() {
 		config.MEDIA_DIR,
 		fileExporer,
 		omdbInfoProvider,
+		videoService,
 		titleInfoService,
-		fileInfoService,
+		subtitleService,
 	)
 
 	eventHanlder := infrastructure.NewMediaEventHandlerService(
 		config.MEDIA_DIR,
-		fileInfoService,
 		titleInfoService,
+		videoService,
 		fileExporer,
 		omdbInfoProvider,
 	)
@@ -78,12 +82,11 @@ func main() {
 		omdbInfoProvider,
 		eventHanlder,
 	)
-
-	go watcher.WatchDirectoryEvents()
-	go watcher.ListenMediaEvents()
+	watcher.StartWatching()
 
 	// API REST
 	gin.SetMode(gin.ReleaseMode)
+
 	router := gin.Default()
 
 	corsConfig := cors.DefaultConfig()
@@ -95,9 +98,11 @@ func main() {
 	router.Use(middlewares.RedirectToRoot())
 
 	controller := controllers.NewMediaInfoController(
+		videoService,
 		titleInfoService,
-		fileInfoService,
-		mediaInfoSyncService)
+		mediaInfoSyncService,
+		subtitleService,
+	)
 
 	manageData := router.Group("/api/manage")
 	{
@@ -111,12 +116,16 @@ func main() {
 		infoRouter.GET("/titles/series", controller.GetSeries)
 		infoRouter.GET("/titles/movies", controller.GetMovies)
 
-		infoRouter.GET("/files/all", controller.GetAllFilesInfo)
-		infoRouter.GET("/files/:titleId", controller.GetFileInfoByTitleId)
+		infoRouter.GET("/video/all", controller.GetAllVideos)
+		infoRouter.GET("/video/:titleId", controller.GetVideoByTitleId)
 
-		infoRouter.GET("/video/:videoId", controller.StreamVideo)
+		infoRouter.GET("/all-subtitles", controller.GetAllSubtitles)
 
+		infoRouter.GET("/stream/:videoId", controller.StreamVideo)
+		infoRouter.StaticFS("/subtitles", http.Dir(config.SUBTITLE_DIR))
 	}
+
+	// serve subtitle files
 
 	// serve embed web app
 	//
