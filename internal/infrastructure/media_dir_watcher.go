@@ -127,9 +127,9 @@ func (w *WatchMediafileEvents) WatchDirectoryEvents() {
 	}
 
 	// add subdiretctories
-	fileInfo, _ := w.FileExplorerService.ScanDir(w.WatchedMediaDir)
+	files, _ := w.FileExplorerService.ScanDir(w.WatchedMediaDir)
 
-	for _, f := range fileInfo {
+	for _, f := range files {
 		if f.IsDir {
 			watcher.AddWith(f.Path)
 		}
@@ -177,6 +177,13 @@ func (w *WatchMediafileEvents) ListenMediaEvents() []string {
 		}
 	}
 
+}
+
+// StartWatching starts watching for media file events.
+// It spawns two goroutines: one for watching directory events and another for listening to media events.
+func (w *WatchMediafileEvents) StartWatching() {
+	go w.WatchDirectoryEvents()
+	go w.ListenMediaEvents()
 }
 
 func isDir(path string) bool {
