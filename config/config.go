@@ -14,6 +14,7 @@ type Config struct {
 	DB_PATH   string `toml:"DB_PATH"`
 	PORT      string `toml:"PORT"`
 	MEDIA_DIR string `toml:"MEDIA_DIR"`
+	SUBTITLE_DIR string `toml:"SUBTITLE_DIR"`
 	API_KEY   string `toml:"API_KEY"`
 }
 
@@ -36,6 +37,7 @@ func LoadConfig() (Config, error) {
 		DB_PATH:   "./database.db",
 		PORT:      ":3002",
 		MEDIA_DIR: "./media",
+		SUBTITLE_DIR: "./subtitles",
 		API_KEY:   "",
 	}
 
