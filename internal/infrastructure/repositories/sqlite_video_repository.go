@@ -28,19 +28,14 @@ func (s *SqliteVideoRepository) DeleteBy(field string, value interface{}) error 
 }
 
 func (s *SqliteVideoRepository) Save(video *models.Video) error {
-	res := s.Db.Create(video)
-	return res.Error
+	return s.Db.Create(video).Error
 }
 
 func (s *SqliteVideoRepository) GetOneBy(field string, value interface{}) (models.Video, error) {
 	var video models.Video
 	query := field + " = ? "
-	result := s.Db.Where(query, value).First(&video)
-	if result.Error != nil {
-		return video, result.Error
-	}
-	return video, nil
-
+	err := s.Db.Where(query, value).First(&video).Error
+	return video, err
 }
 
 func (s *SqliteVideoRepository) GetBy(field string, value interface{}) ([]models.Video, error) {
@@ -56,16 +51,12 @@ func (s *SqliteVideoRepository) GetBy(field string, value interface{}) ([]models
 
 func (s *SqliteVideoRepository) GetAll() ([]models.Video, error) {
 	var data []models.Video
-	res := s.Db.Find(&data)
-	if res.Error != nil {
-		return []models.Video{}, res.Error
-	}
-	return data, nil
+	err := s.Db.Find(&data).Error
+	return data, err
 }
 
 func (s *SqliteVideoRepository) DropDatabase() error {
-	err := s.Db.Migrator().DropTable(&models.Video{})
-	return err
+	return s.Db.Migrator().DropTable(&models.Video{})
 }
 
 func (s *SqliteVideoRepository) Migrate() error {
