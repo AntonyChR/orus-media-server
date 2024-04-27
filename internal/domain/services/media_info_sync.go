@@ -2,9 +2,11 @@ package services
 
 import (
 	"log"
+	"os"
 	"path/filepath"
 
 	domain "github.com/AntonyChR/orus-media-server/internal/domain"
+	models "github.com/AntonyChR/orus-media-server/internal/domain/models"
 )
 
 func NewMediaInfoSyncService(
@@ -13,6 +15,7 @@ func NewMediaInfoSyncService(
 	titleInfoProvider domain.TitleInfoProvider,
 	videoService *VideoService,
 	titleInfoService *TitleInfoService,
+	subtitleService *SubtitleService,
 ) *MediaInfoSyncService {
 	return &MediaInfoSyncService{
 		Path:                path,
@@ -20,6 +23,7 @@ func NewMediaInfoSyncService(
 		TitleInfoProvider:   titleInfoProvider,
 		VideoService:        videoService,
 		TitleInfoService:    titleInfoService,
+		SubtitleService:     subtitleService,
 	}
 }
 
@@ -31,9 +35,13 @@ type MediaInfoSyncService struct {
 
 	VideoService     *VideoService
 	TitleInfoService *TitleInfoService
+	SubtitleService  *SubtitleService
 }
 
 func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
+
+	log.Println("Scanning media files")
+
 	mediaFiles, err := m.FileExplorerService.ScanDir(m.Path)
 
 	if err != nil {
@@ -87,5 +95,36 @@ func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
 	}
 
 	return nil
+
+}
+
+func (m *MediaInfoSyncService) ScanSubtitles() error {
+
+	log.Println("Scanning subtitles")
+
+	var subtitles []models.Subtitle
+	files, err := os.ReadDir(m.Path)
+
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+
+		subtitles = append(subtitles, models.Subtitle{
+			Path:      filepath.Join(m.Path, file.Name()),
+			Name:      file.Name(),
+			IsDefault: false,
+		})
+	}
+
+	if len(subtitles) == 0 {
+		return nil
+	}
+
+	return m.SubtitleService.SaveAll(&subtitles)
 
 }
