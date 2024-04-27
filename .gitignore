@@ -5,3 +5,4 @@ app
 *.sh
 **/*.mp4
 config.toml
+subtitles/
