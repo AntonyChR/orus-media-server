@@ -10,7 +10,8 @@ import (
 )
 
 func NewMediaInfoSyncService(
-	path string,
+	mediaDir string,
+	subtitlesDir string,
 	fileExplorerService domain.MediaFileExplorer,
 	titleInfoProvider domain.TitleInfoProvider,
 	videoService *VideoService,
@@ -18,7 +19,8 @@ func NewMediaInfoSyncService(
 	subtitleService *SubtitleService,
 ) *MediaInfoSyncService {
 	return &MediaInfoSyncService{
-		Path:                path,
+		MediaDir:            mediaDir,
+		SubtitlesDir:        subtitlesDir,
 		FileExplorerService: fileExplorerService,
 		TitleInfoProvider:   titleInfoProvider,
 		VideoService:        videoService,
@@ -28,7 +30,8 @@ func NewMediaInfoSyncService(
 }
 
 type MediaInfoSyncService struct {
-	Path string
+	MediaDir     string
+	SubtitlesDir string
 
 	FileExplorerService domain.MediaFileExplorer
 	TitleInfoProvider   domain.TitleInfoProvider
@@ -42,7 +45,7 @@ func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
 
 	log.Println("Scanning media files")
 
-	mediaFiles, err := m.FileExplorerService.ScanDir(m.Path)
+	mediaFiles, err := m.FileExplorerService.ScanDir(m.MediaDir)
 
 	if err != nil {
 		return err
@@ -103,7 +106,7 @@ func (m *MediaInfoSyncService) ScanSubtitles() error {
 	log.Println("Scanning subtitles")
 
 	var subtitles []models.Subtitle
-	files, err := os.ReadDir(m.Path)
+	files, err := os.ReadDir(m.SubtitlesDir)
 
 	if err != nil {
 		return err
@@ -115,9 +118,9 @@ func (m *MediaInfoSyncService) ScanSubtitles() error {
 		}
 
 		subtitles = append(subtitles, models.Subtitle{
-			Path:      filepath.Join(m.Path, file.Name()),
-			Name:      file.Name(),
-			IsDefault: false,
+			Path: filepath.Join(m.SubtitlesDir, file.Name()),
+			Name: file.Name(),
+			Lang: m.SubtitleService.GetLang(file.Name()),
 		})
 	}
 

@@ -1,6 +1,8 @@
 package services
 
 import (
+	"regexp"
+
 	models "github.com/AntonyChR/orus-media-server/internal/domain/models"
 	repositories "github.com/AntonyChR/orus-media-server/internal/domain/repositories"
 )
@@ -29,7 +31,7 @@ func (s *SubtitleService) GetAll() ([]models.Subtitle, error) {
 }
 
 func (s *SubtitleService) GetByVideoId(videoId uint) ([]models.Subtitle, error) {
-	data, err := s.SubtitleRepository.GetBy("video_id", videoId)
+	data, err := s.SubtitleRepository.GetBy("videoId", videoId)
 	return data, err
 }
 
@@ -59,4 +61,16 @@ func (s *SubtitleService) Reset() error {
 		return err
 	}
 	return s.SubtitleRepository.Migrate()
+}
+
+func (s *SubtitleService) GetLang(file string) string {
+
+	regex := regexp.MustCompile(`\.\w+\.`)
+	lang := regex.FindString(file)
+
+	if lang == "" {
+		return ""
+	}
+	lang = lang[1 : len(lang)-1]
+	return lang
 }

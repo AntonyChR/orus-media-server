@@ -9,4 +9,5 @@ type Video struct {
 	TitleId uint   `json:"TitleId"`
 	Episode uint   `json:"Episode"`
 	Season  uint   `json:"Season"`
+	Ext     string `json:"Ext"`
 }
