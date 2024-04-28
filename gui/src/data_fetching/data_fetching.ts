@@ -4,7 +4,7 @@ import { TitleInfo } from '../types/TitleInfo';
 import { ENDPOINTS } from './endpoints';
 
 
-export const getAllSubtitles = async (): Promise<Subtitle[] | null> => {
+const getAllSubtitles = async (): Promise<Subtitle[] | null> => {
     const url =ENDPOINTS.media.allSubtitles;
     try {
         const resp = await fetch(url);
@@ -15,7 +15,22 @@ export const getAllSubtitles = async (): Promise<Subtitle[] | null> => {
     }
 }
 
-export const getAllTitles = async (): Promise<TitleInfo[] | null> => {
+const assignVideoIdToSubtitle = async(videoId: number, subtitleId: number): Promise<Error|null> => {
+
+    const url = `${ENDPOINTS.media.videoSubtitles}/${subtitleId}/${videoId}`;
+
+    try {
+        await fetch(url, { method: 'POST' });
+        return null;
+    }catch(error){
+        if (error instanceof Error){
+            return error
+        }
+        return new Error(`Request error: ${error}`)
+    }
+}
+
+const getAllTitles = async (): Promise<TitleInfo[] | null> => {
     try {
         const resp = await fetch(ENDPOINTS.media.allTitles);
         const data: TitleInfo[] = await resp.json();
@@ -25,7 +40,7 @@ export const getAllTitles = async (): Promise<TitleInfo[] | null> => {
     }
 };
 
-export const getMovieSrc = async (titleId: number): Promise<string | null> => {
+const getMovieSrc = async (titleId: number): Promise<string | null> => {
     const url = `${ENDPOINTS.media.videoFileInfo}/${titleId}`;
     try {
         const resp = await fetch(url);
@@ -35,11 +50,11 @@ export const getMovieSrc = async (titleId: number): Promise<string | null> => {
         return null;
     }
 };
-export const getVideoChapterSrc = (videoId: string): string => {
+const getVideoChapterSrc = (videoId: string): string => {
     return `${ENDPOINTS.media.videoStream}/${videoId}`;
 };
 
-export const getChapters = async (
+const getChapters = async (
     titleId: number
 ): Promise<FileInfo[] | null> => {
     const url = `${ENDPOINTS.media.videoFileInfo}/${titleId}`;
@@ -52,7 +67,7 @@ export const getChapters = async (
     }
 };
 
-export const resetDatabase = async (): Promise<Error | null>=> {
+const resetDatabase = async (): Promise<Error | null>=> {
     try{
         const resp = await fetch(ENDPOINTS.config.resetDb)
         if (resp.status != 200){
@@ -67,3 +82,15 @@ export const resetDatabase = async (): Promise<Error | null>=> {
     }
 
 }
+
+const ApiDb = {
+    getAllSubtitles,
+    assignVideoIdToSubtitle,
+    getAllTitles,
+    getMovieSrc,
+    getVideoChapterSrc,
+    getChapters,
+    resetDatabase
+}
+
+export default ApiDb;
