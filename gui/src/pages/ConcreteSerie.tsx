@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { DataContext } from '../providers/dataProvider/context';
 import VideoPlayer from '../components/VideoPlayer';
-import { FileInfo } from '../types/FileInfo';
+import { Video } from '../types/Video';
 import ApiDb from '../data_fetching/data_fetching';
 
 const ConcreteSeries = () => {
     const [videoSrc, setVideoSrc] = useState('');
-    const [chapters, setChapters] = useState<FileInfo[] | null>(null);
+    const [chapters, setChapters] = useState<Video[] | null>(null);
 
     const { seriesId, chapterId } = useParams();
     const { series } = useContext(DataContext);

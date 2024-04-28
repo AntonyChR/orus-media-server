@@ -1,4 +1,4 @@
-export interface FileInfo {
+export interface Video {
     ID:        number;
     CreatedAt: Date;
     UpdatedAt: Date;

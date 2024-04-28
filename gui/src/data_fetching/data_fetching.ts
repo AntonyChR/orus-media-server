@@ -1,4 +1,4 @@
-import { FileInfo } from '../types/FileInfo';
+import { Video } from '../types/Video';
 import { Subtitle } from '../types/Subtitle';
 import { TitleInfo } from '../types/TitleInfo';
 import { ENDPOINTS } from './endpoints';
@@ -44,7 +44,7 @@ const getMovieSrc = async (titleId: number): Promise<string | null> => {
     const url = `${ENDPOINTS.media.videoFileInfo}/${titleId}`;
     try {
         const resp = await fetch(url);
-        const data: FileInfo[] = await resp.json();
+        const data: Video[] = await resp.json();
         return `${ENDPOINTS.media.videoStream}/${data[0].ID}`;
     } catch (error) {
         return null;
@@ -56,11 +56,11 @@ const getVideoChapterSrc = (videoId: string): string => {
 
 const getChapters = async (
     titleId: number
-): Promise<FileInfo[] | null> => {
+): Promise<Video[] | null> => {
     const url = `${ENDPOINTS.media.videoFileInfo}/${titleId}`;
     try {
         const resp = await fetch(url);
-        const data: FileInfo[] = await resp.json();
+        const data: Video[] = await resp.json();
         return data;
     } catch (error) {
         return null;
