@@ -6,4 +6,5 @@ export interface Subtitle {
     Path:      string;
     Name:      string;
     VideoId:   number;
+    Lang:      string;
 }

@@ -9,4 +9,5 @@ export interface FileInfo {
     TitleId:   number;
     Episode:   number;
     Season:    number;
+    Ext:       string;
 }
