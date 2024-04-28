@@ -9,7 +9,7 @@ const ConcreteMovie = () => {
     const [videoSrc, setVideoSrc] = useState('');
     const { movieId } = useParams();
         const { movies, assignVideoIdToSubtitles } = useContext(DataContext);
-        
+
     let titleInfo = null;
 
     for (let i = 0; i < movies.length; i++) {
@@ -44,9 +44,9 @@ const ConcreteMovie = () => {
         <div>
             {titleInfo && (
                 <div>
-                    <div className='flex'>
-                        <h1 className='text-white'>{titleInfo.Title}</h1>
-                        <SelectSubtitle onSelect={onSelectSubtitle}/>
+                    <div className='grid grid-cols-2 w-full'>
+                        <h1 className='text-white col-span-1'>{titleInfo.Title}</h1>
+                        <SelectSubtitle className='col-span-1 flex justify-end' onSelect={onSelectSubtitle}/>
                     </div>
                     <div className='flex justify-center w h-full'>
                         <VideoPlayer
