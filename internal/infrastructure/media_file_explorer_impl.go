@@ -47,6 +47,7 @@ func (f *MediaFileExplorerImpl) ScanDir(path string) ([]models.FileInfo, error) 
 				Path:    filepath.Join(path, f.Name()),
 				Season:  season,
 				Episode: episode,
+				Ext:     filepath.Ext(f.Name())[1:],
 			},
 			IsDir: false,
 		}
@@ -68,6 +69,7 @@ func (f *MediaFileExplorerImpl) GetVideoInfo(path string) (models.Video, error) 
 		Path:    path,
 		Season:  season,
 		Episode: episode,
+		Ext:     filepath.Ext(fileData.Name())[1:],
 	}, nil
 }
 
