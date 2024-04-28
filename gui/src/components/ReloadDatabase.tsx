@@ -1,11 +1,11 @@
-import { resetDatabase } from '../data_fetching/data_fetching';
+import ApiDb from '../data_fetching/data_fetching';
 import { useWrapFetch } from '../hooks/useWrapFetch';
 
 import spinner from '/spinner.svg';
 
 const ReloadDatabase = () => {
     const {loading, makeRequest } = useWrapFetch<Error | null>(
-        resetDatabase
+        ApiDb.resetDatabase
     );
     return (
         <div className='w-full flex flex-col'>

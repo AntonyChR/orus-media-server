@@ -1,12 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { DataContext } from '../providers/dataProvider/context';
-import {
-    getChapters,
-    getVideoChapterSrc,
-} from '../data_fetching/data_fetching';
 import VideoPlayer from '../components/VideoPlayer';
 import { FileInfo } from '../types/FileInfo';
+import ApiDb from '../data_fetching/data_fetching';
 
 const ConcreteSeries = () => {
     const [videoSrc, setVideoSrc] = useState('');
@@ -26,13 +23,13 @@ const ConcreteSeries = () => {
 
     useEffect(() => {
         if (chapterId) {
-            setVideoSrc(getVideoChapterSrc(chapterId));
+            setVideoSrc(ApiDb.getVideoChapterSrc(chapterId));
         }
     }, [chapterId]);
 
     useEffect(() => {
         if (titleInfo) {
-            getChapters(titleInfo.ID).then((resp) => {
+            ApiDb.getChapters(titleInfo.ID).then((resp) => {
                 if (!resp) return;
                 const orderedChapters = resp.sort((a, b) => {
                     if (a.Season > b.Season) {
@@ -132,6 +129,7 @@ const ConcreteSeries = () => {
                             className='h-[80vh]'
                             src={videoSrc}
                             poster={titleInfo.Poster}
+                            videoId={Number(chapterId)}
                         />
                     </div>
                 </div>
