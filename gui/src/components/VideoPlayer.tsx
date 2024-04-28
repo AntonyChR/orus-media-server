@@ -24,22 +24,20 @@ const VideoPlayer: FC<VideoPlayerProps> = ({
         setSubtitles(videoSubtitles);
     }, [src, videoId, allSubtitles]);
     return (
-        <>
-            <video className={className} src={src} controls poster={poster}>
+            <video className={className} src={src}  controls crossOrigin='anonymous' poster={poster}>
                 {subtitles.map((sub,i) => {
                     return (
                         <track
                             default={i === 0 ? true : false}
-                            key={sub.ID}
+                            key={sub.Name}
                             src={`${ENDPOINTS.media.subtitlesServer}/${sub.Name}`}
-                            srcLang={i===0 ? 'en' : 'es'}
-                            label={sub.Name}
+                            srcLang={sub.Lang}
+                            label={sub.Lang}
                             kind='subtitles'
                         />
                     );
                 })}
             </video>
-        </>
     );
 };
 
