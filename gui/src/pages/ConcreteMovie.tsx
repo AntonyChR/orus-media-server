@@ -2,13 +2,14 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DataContext } from '../providers/dataProvider/context';
 import VideoPlayer from '../components/VideoPlayer';
-import { getMovieSrc } from '../data_fetching/data_fetching';
+import SelectSubtitle from '../components/SelectSubtitle';
+import ApiDb from '../data_fetching/data_fetching';
 
 const ConcreteMovie = () => {
     const [videoSrc, setVideoSrc] = useState('');
-
     const { movieId } = useParams();
-    const { movies } = useContext(DataContext);
+        const { movies, assignVideoIdToSubtitles } = useContext(DataContext);
+        
     let titleInfo = null;
 
     for (let i = 0; i < movies.length; i++) {
@@ -18,11 +19,16 @@ const ConcreteMovie = () => {
         }
     }
 
+    const onSelectSubtitle = (subtitleId: number) => {
+        if (titleInfo) {
+            assignVideoIdToSubtitles(titleInfo.ID, subtitleId);
+        }
+    }
+
     useEffect(() => {
         if (!titleInfo) return;
-        getMovieSrc(titleInfo?.ID).then((resp: string | null) => {
+        ApiDb.getMovieSrc(titleInfo?.ID).then((resp: string | null) => {
             if (resp) {
-                //console.log("video id",resp)
                 setVideoSrc(String(resp));
             }
         });
@@ -38,11 +44,15 @@ const ConcreteMovie = () => {
         <div>
             {titleInfo && (
                 <div>
-                    <h1 className='text-white'>{titleInfo.Title}</h1>
+                    <div className='flex'>
+                        <h1 className='text-white'>{titleInfo.Title}</h1>
+                        <SelectSubtitle onSelect={onSelectSubtitle}/>
+                    </div>
                     <div className='flex justify-center w h-full'>
                         <VideoPlayer
                             className='w-[80vw] h-[80vh]'
                             src={videoSrc}
+                            videoId={titleInfo.ID}
                             poster={titleInfo.Poster}
                         />
                     </div>

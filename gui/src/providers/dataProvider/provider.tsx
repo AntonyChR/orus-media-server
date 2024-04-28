@@ -1,9 +1,10 @@
 import { FC, ReactNode, useEffect, useState } from 'react';
 import { DataContext } from './context';
 import { TitleInfo } from '../../types/TitleInfo';
-import { getAllTitles } from '../../data_fetching/data_fetching';
 import { getLastRoute, saveLastRoute } from '../../storage/localstorage';
 import { useNavigate } from 'react-router-dom';
+import { Subtitle } from '../../types/Subtitle';
+import ApiDb from '../../data_fetching/data_fetching';
 
 interface Props {
     children: ReactNode;
@@ -12,6 +13,7 @@ interface Props {
 interface StateProps {
     movies: TitleInfo[];
     series: TitleInfo[];
+    subtitles: Subtitle[];
 }
 
 export const DataProvider: FC<Props> = ({ children }) => {
@@ -20,10 +22,11 @@ export const DataProvider: FC<Props> = ({ children }) => {
     const [titles, setTitles] = useState<StateProps>({
         movies: [],
         series: [],
+        subtitles: [],
     });
 
     const getTitles = async () => {
-        const data = await getAllTitles();
+        const data = await ApiDb.getAllTitles();
         if (!data) {
             // show error alert
             return;
@@ -41,8 +44,31 @@ export const DataProvider: FC<Props> = ({ children }) => {
             }
         });
 
-        setTitles({ movies, series });
+        let subtitles: Subtitle[] = [];
+
+        const subtitlesResp = await ApiDb.getAllSubtitles();
+        if (subtitlesResp) {
+            subtitles = subtitlesResp;
+        }
+        setTitles({ movies, series , subtitles});
     };
+
+
+    const assignVideoIdToSubtitles = async (videoId: number, subtitleId:number) => {
+        const err = await ApiDb.assignVideoIdToSubtitle(videoId, subtitleId);
+        if (err) {
+            // show error alert
+            return;
+        }
+        const subtitles = titles.subtitles.map((sub) => {
+            if (sub.ID === subtitleId) {
+                sub.VideoId = videoId;
+            }
+            return sub;
+        });
+        setTitles({ ...titles, subtitles });
+    }
+
     useEffect(() => {
         getTitles();
     }, []);
@@ -67,7 +93,7 @@ export const DataProvider: FC<Props> = ({ children }) => {
     }, []);
 
     return (
-        <DataContext.Provider value={{ ...titles }}>
+        <DataContext.Provider value={{ ...titles, assignVideoIdToSubtitles }}>
             {children}
         </DataContext.Provider>
     );
