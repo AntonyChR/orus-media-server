@@ -60,6 +60,7 @@ func main() {
 
 	mediaInfoSyncService := services.NewMediaInfoSyncService(
 		config.MEDIA_DIR,
+		config.SUBTITLE_DIR,
 		fileExporer,
 		omdbInfoProvider,
 		videoService,
@@ -120,6 +121,7 @@ func main() {
 		infoRouter.GET("/video/:titleId", controller.GetVideoByTitleId)
 
 		infoRouter.GET("/all-subtitles", controller.GetAllSubtitles)
+		infoRouter.POST("/video-subtitles/:subtId/:videoId", controller.AssignVideoIdToSubtitles)
 
 		infoRouter.GET("/stream/:videoId", controller.StreamVideo)
 		infoRouter.StaticFS("/subtitles", http.Dir(config.SUBTITLE_DIR))

@@ -80,10 +80,64 @@ func (m *MediaInfoController) GetAllSubtitles(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 
+func (m *MediaInfoController) AssignVideoIdToSubtitles(ctx *gin.Context) {
+	videoIdStr := ctx.Param("videoId")
+	if videoIdStr == "" {
+		ctx.String(http.StatusBadRequest, "Video id is required: /api/media/assign-video-id/:videoId")
+		return
+	}
+
+	videoId, err := strconv.Atoi(videoIdStr)
+	if err != nil {
+		ctx.String(http.StatusBadRequest, "Invalid video id")
+		return
+	}
+
+	subtIdStr := ctx.Param("subtId")
+	if subtIdStr == "" {
+		ctx.String(http.StatusBadRequest, "Subtitle id is required: /api/media/assign-video-id/:videoId/:subtId")
+		return
+	}
+
+	subtId, err := strconv.Atoi(subtIdStr)
+	if err != nil {
+		ctx.String(http.StatusBadRequest, "Invalid subtitle id")
+		return
+	}
+
+	err = m.SubtitleService.SetVideoId(uint(subtId), uint(videoId))
+	if err != nil {
+		ctx.String(http.StatusNotFound, "Not found")
+		return
+	}
+	ctx.String(http.StatusOK, "Video id assigned to subtitles")
+}
+
+func (m *MediaInfoController) GetSubtitlesByVideoId(ctx *gin.Context) {
+	videoIdStr := ctx.Param("videoId")
+	if videoIdStr == "" {
+		ctx.String(http.StatusBadRequest, "Video id is required: /api/media/video-subtitles/:videoId")
+		return
+	}
+
+	videoId, err := strconv.Atoi(videoIdStr)
+	if err != nil {
+		ctx.String(http.StatusBadRequest, "Invalid video id")
+		return
+	}
+
+	data, err := m.SubtitleService.GetByVideoId(uint(videoId))
+	if err != nil {
+		ctx.String(http.StatusNotFound, "Not found")
+		return
+	}
+	ctx.JSON(http.StatusOK, data)
+}
+
 func (m *MediaInfoController) GetVideoByTitleId(ctx *gin.Context) {
 	titleIdStr := ctx.Param("titleId")
 	if titleIdStr == "" {
-		ctx.String(http.StatusBadRequest, "Title id is required: /files/title/:titleId")
+		ctx.String(http.StatusBadRequest, "Title id is required: /api/media/video/:titleId")
 		return
 	}
 
@@ -195,7 +249,7 @@ func (m *MediaInfoController) StreamVideo(ctx *gin.Context) {
 
 		ctx.Header("Content-Range", contentRangeHeader)
 		ctx.Header("Accept-Ranges", "bytes")
-		ctx.Header("Content-Type", "video/mp4")
+		ctx.Header("Content-Type", "video/"+videoInfo.Ext)
 		ctx.Header("Content-Length", chunkSizeStr)
 		ctx.Status(http.StatusPartialContent)
 
