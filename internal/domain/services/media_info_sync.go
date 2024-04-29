@@ -80,10 +80,10 @@ func (m *MediaInfoSyncService) GetTitleInfoAboutAllMediaFiles() error {
 
 		} else {
 			video := file.Video
-			titleInfo, err := m.TitleInfoProvider.Search(video.Name)
+			titleInfo, searchErr := m.TitleInfoProvider.Search(video.Name)
 			titleInfo.Folder = filepath.Dir(video.Path)
-			if err != nil {
-				log.Println(err)
+			if searchErr != nil {
+				log.Println(searchErr)
 			} else {
 				if err = m.TitleInfoService.Save(&titleInfo); err != nil { // Create record and asign ID value
 					log.Println(err)
