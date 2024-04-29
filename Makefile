@@ -8,6 +8,10 @@ DIST_DIR := dist
 # Name of the binary file
 BINARY_NAME := app
 
+# prepare dev enviroment
+prepare:
+	./GitHookSetup.sh
+
 # Lint the GUI source code
 lint_gui:
 	cd $(GUI_DIR) && npm run lint
