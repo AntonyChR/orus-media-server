@@ -32,7 +32,7 @@ func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error)
 	// In this case the OmdbSearchResponse struct fields are the same as the TitleInfo struct fields
 	// so we can use the TitleInfo struct to unmarshal the response.
 
-	// var info OmdbSearchResponse
+	var searchResponse OmdbSearchResponse
 	var titleInfo models.TitleInfo
 
 	params := extractSearchParams(fileName)
@@ -56,9 +56,10 @@ func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error)
 		return titleInfo, err
 	}
 
+	// The API https://www.omdbapi.com/ returns a 200 status code even if the movie is not found.
+	// so we need to check if the response is not 200 and return an error.
 	if resp.StatusCode != http.StatusOK {
-		log.Println("Data not found: ", url)
-		return titleInfo, errors.New("not found")
+		return titleInfo, errors.New("error getting movie information from OMDb API")
 	}
 
 	defer resp.Body.Close()
@@ -69,7 +70,28 @@ func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error)
 		return titleInfo, err
 	}
 
-	err = json.Unmarshal(bodyBytes, &titleInfo)
+	err = json.Unmarshal(bodyBytes, &searchResponse)
+
+	if err != nil {
+		return titleInfo, err
+	}
+
+	if searchResponse.Error != "" || searchResponse.Response == "False" {
+		return titleInfo, errors.New(searchResponse.Error)
+	}
+
+	titleInfo.Title = searchResponse.Title
+	titleInfo.Year = searchResponse.Year
+	titleInfo.Rated = searchResponse.Rated
+	titleInfo.Released = searchResponse.Released
+	titleInfo.Runtime = searchResponse.Runtime
+	titleInfo.Genre = searchResponse.Genre
+	titleInfo.Director = searchResponse.Director
+	titleInfo.Plot = searchResponse.Plot
+	titleInfo.Poster = searchResponse.Poster
+	titleInfo.ImdbRating = searchResponse.ImdbRating
+	titleInfo.ImdbID = searchResponse.ImdbID
+	titleInfo.Type = searchResponse.Type
 
 	return titleInfo, err
 }
