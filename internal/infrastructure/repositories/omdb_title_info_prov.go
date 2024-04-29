@@ -28,12 +28,17 @@ type OmdbApiTitleInfoProv struct {
 // Search searches for movie information based on the provided file name.
 // It returns a models.TitleInfo struct containing the movie information, or an error if the search fails.
 func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error) {
-	var info models.TitleInfo
+
+	// In this case the OmdbSearchResponse struct fields are the same as the TitleInfo struct fields
+	// so we can use the TitleInfo struct to unmarshal the response.
+
+	// var info OmdbSearchResponse
+	var titleInfo models.TitleInfo
 
 	params := extractSearchParams(fileName)
 
 	if params[0] == "" {
-		return info, errors.New("invalid filename format")
+		return titleInfo, errors.New("invalid filename format")
 	}
 	year := ""
 	title := "&t=" + strings.ReplaceAll(params[0], " ", "%20")
@@ -48,12 +53,12 @@ func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error)
 	resp, err := http.Get(url)
 
 	if err != nil {
-		return info, err
+		return titleInfo, err
 	}
 
 	if resp.StatusCode != http.StatusOK {
 		log.Println("Data not found: ", url)
-		return info, errors.New("not found")
+		return titleInfo, errors.New("not found")
 	}
 
 	defer resp.Body.Close()
@@ -61,12 +66,12 @@ func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error)
 	bodyBytes, err := io.ReadAll(resp.Body)
 
 	if err != nil {
-		return info, err
+		return titleInfo, err
 	}
 
-	err = json.Unmarshal(bodyBytes, &info)
+	err = json.Unmarshal(bodyBytes, &titleInfo)
 
-	return info, err 
+	return titleInfo, err
 }
 
 // extractSearchParams extracts the search parameters from the given file name.
