@@ -26,5 +26,5 @@ hash:
 
 # Build the application by running lint_gui, build_gui, and hash targets
 build: lint_gui build_gui
-	go build -o $(DIST_DIR)/$(BINARY_NAME) main.go
+	go build -ldflags="-s -w" -o $(DIST_DIR)/$(BINARY_NAME) main.go
 	@make hash
