@@ -2,7 +2,6 @@ temp/
 dist/
 app
 *.db
-*.sh
 **/*.mp4
 config.toml
 subtitles/
