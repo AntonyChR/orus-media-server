@@ -97,20 +97,22 @@ func (s *MediaEventHandlerService) HandleNewFile(event MediaChangeEvent) error {
 
 		err = s.videoService.Save(&videoInfo)
 		return err
-	}
 
-	video, err := s.FileExplorerService.GetVideoInfo(event.FilePath)
-	if err != nil {
+	} else {
+
+		video, err := s.FileExplorerService.GetVideoInfo(event.FilePath)
+		if err != nil {
+			return err
+		}
+		titleInfo, err := s.TitleInfoService.GetByFolder(dir)
+		if err != nil || titleInfo.ID == 0 {
+			return err
+		}
+
+		video.TitleId = titleInfo.ID
+		err = s.videoService.Save(&video)
 		return err
 	}
-	titleInfo, err := s.TitleInfoService.GetByFolder(dir)
-	if err != nil || titleInfo.ID == 0 {
-		return err
-	}
-
-	video.TitleId = titleInfo.ID
-	err = s.videoService.Save(&video)
-	return err
 
 }
 
@@ -135,15 +137,16 @@ func (s *MediaEventHandlerService) HandleRemoveFile(event MediaChangeEvent) erro
 		s.videoService.DeleteById(video.ID)
 		err = s.TitleInfoService.DeleteById(titleInfo.ID)
 		return err
-	}
+	} else {
 
-	video, err := s.videoService.GetByName(filepath.Base(event.FilePath))
+		video, err := s.videoService.GetByName(filepath.Base(event.FilePath))
 
-	if err != nil {
+		if err != nil {
+			return err
+		}
+
+		err = s.videoService.DeleteById(video.ID)
+
 		return err
 	}
-
-	err = s.videoService.DeleteById(video.ID)
-
-	return err
 }
