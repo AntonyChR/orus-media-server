@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+
+# GUI pre-commit hook
+
+lines=$(git diff --cached --name-only | grep "gui/" | wc -l)
+
+if [ $lines -gt 0 ]; then
+    cd gui/
+    npm run lint
+fi
+
+# Backend pre-commit hook

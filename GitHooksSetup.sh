@@ -4,6 +4,8 @@
 # It sets the core.hooksPath configuration to point to the 'git-hooks' directory,
 # which contains custom Git hooks specific to the project.
 
+# Execute "git config --unset core.hooksPath" to remove the custom hooks path.
 git config core.hooksPath git-hooks/
 
-# Execute "git config --unset core.hooksPath" to remove the custom hooks path.
+cd git-hooks
+chmod +x pre-commit

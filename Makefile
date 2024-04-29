@@ -10,7 +10,7 @@ BINARY_NAME := app
 
 # prepare dev enviroment
 prepare:
-	./GitHookSetup.sh
+	./GitHooksSetup.sh
 
 # Lint the GUI source code
 lint_gui:
