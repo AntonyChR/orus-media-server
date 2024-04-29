@@ -156,6 +156,16 @@ func (m *MediaInfoController) GetVideoByTitleId(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 
+func (m *MediaInfoController) VideosWithNoTitleInfo(ctx *gin.Context) {
+	data, err := m.VideoService.GetVideosWithNoTitleInfo()
+	if err != nil {
+		ctx.String(http.StatusNotFound, "Not found")
+		return
+	}
+	ctx.JSON(http.StatusOK, data)
+
+}
+
 func (m *MediaInfoController) ResetDatabase(ctx *gin.Context) {
 	err := m.VideoService.Reset()
 	if err != nil {

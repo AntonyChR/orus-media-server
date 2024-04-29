@@ -46,7 +46,7 @@ func (f *VideoService) Save(fileInfo *models.Video) error {
 	return f.VideoRepository.Save(fileInfo)
 }
 
-func (f *VideoService) GetVideosWithNoTitleId() ([]models.Video, error) {
+func (f *VideoService) GetVideosWithNoTitleInfo() ([]models.Video, error) {
 	data, err := f.VideoRepository.GetBy("title_id", 0)
 	return data, err
 }

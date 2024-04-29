@@ -119,6 +119,7 @@ func main() {
 
 		infoRouter.GET("/video/all", controller.GetAllVideos)
 		infoRouter.GET("/video/:titleId", controller.GetVideoByTitleId)
+		infoRouter.GET("/no-info", controller.VideosWithNoTitleInfo)
 
 		infoRouter.GET("/all-subtitles", controller.GetAllSubtitles)
 		infoRouter.POST("/video-subtitles/:subtId/:videoId", controller.AssignVideoIdToSubtitles)
