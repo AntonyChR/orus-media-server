@@ -59,7 +59,7 @@ func TestSearchTitleInfo(t *testing.T) {
 		t.Skip("OMDB_API_KEY is not set")
 	}
 
-	omdbProvider := NewOmdbProvider("http://www.omdbapi.com", apiKey)
+	omdbProvider := NewOmdbProvider("http://www.omdbapi.com", &apiKey)
 
 	fileNames := []string{
 		"The Matrix (1999).mp4",

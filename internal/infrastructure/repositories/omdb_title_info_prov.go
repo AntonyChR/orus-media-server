@@ -12,9 +12,10 @@ import (
 )
 
 // NewOmdbProvider creates a new instance of OmdbApiTitleInfoProv with the provided base URL API and API key.
-func NewOmdbProvider(baseUrlApi, apiKey string) *OmdbApiTitleInfoProv {
+func NewOmdbProvider(baseUrlApi string, apiKey *string) *OmdbApiTitleInfoProv {
 	return &OmdbApiTitleInfoProv{
-		ApiUrl: baseUrlApi + "/?apikey=" + apiKey,
+		ApiUrl: baseUrlApi + "/?apikey=",
+		ApiKey: apiKey,
 	}
 }
 
@@ -23,6 +24,7 @@ func NewOmdbProvider(baseUrlApi, apiKey string) *OmdbApiTitleInfoProv {
 // More information can be found at: https://www.omdbapi.com/
 type OmdbApiTitleInfoProv struct {
 	ApiUrl string
+	ApiKey *string
 }
 
 // Search searches for movie information based on the provided file name.
@@ -47,7 +49,7 @@ func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error)
 		year = "&y=" + params[1]
 	}
 
-	url := m.ApiUrl + title + year
+	url := m.ApiUrl + *m.ApiKey + title + year
 
 	log.Println("GET: ", url)
 	resp, err := http.Get(url)
