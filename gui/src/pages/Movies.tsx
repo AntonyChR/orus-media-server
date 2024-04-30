@@ -1,7 +1,7 @@
 import { FC, useContext } from 'react';
 import { DataContext } from '../providers/dataProvider/context';
 import TitleList from '../components/TitleList';
-import ReloadDatabase from '../components/ReloadDatabase';
+import ResetDatabase from '../components/ResetDatabase';
 interface MoviesProps {}
 const Movies: FC<MoviesProps> = () => {
     const { movies } = useContext(DataContext);
@@ -11,7 +11,7 @@ const Movies: FC<MoviesProps> = () => {
             {movies.length > 0 ? (
                 <TitleList titles={movies} />
             ) : (
-                <ReloadDatabase />
+                <ResetDatabase />
             )}
         </>
     );

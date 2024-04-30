@@ -1,7 +1,7 @@
 import { FC, useContext } from 'react';
 import { DataContext } from '../providers/dataProvider/context';
 import TitleList from '../components/TitleList';
-import ReloadDatabase from '../components/ReloadDatabase';
+import ResetDatabase from '../components/ResetDatabase';
 interface SeriesProps {}
 
 const Series: FC<SeriesProps> = () => {
@@ -12,7 +12,7 @@ const Series: FC<SeriesProps> = () => {
             {series.length > 0 ? (
                 <TitleList titles={series} />
             ) : (
-                <ReloadDatabase />
+                <ResetDatabase />
             )}
         </>
     );
