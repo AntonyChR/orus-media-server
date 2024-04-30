@@ -48,7 +48,7 @@ func main() {
 	sqliteSubtitleRepo := repositoryImplementations.NewSqliteSubtitleRepo(sqliteDb)
 	sqliteTitleInfoRepo := repositoryImplementations.NewSqliteTitleInfoRepo(sqliteDb)
 
-	omdbInfoProvider := repositoryImplementations.NewOmdbProvider("http://www.omdbapi.com", config.API_KEY)
+	omdbInfoProvider := repositoryImplementations.NewOmdbProvider("http://www.omdbapi.com", &config.API_KEY)
 
 	// services
 
@@ -105,9 +105,12 @@ func main() {
 		subtitleService,
 	)
 
+	configController := controllers.NewConfigController(&config, omdbInfoProvider)
+
 	manageData := router.Group("/api/manage")
 	{
 		manageData.GET("/reset", controller.ResetDatabase)
+		manageData.POST("/api-key", configController.SetApiKey)
 	}
 
 	infoRouter := router.Group("/api/media")
