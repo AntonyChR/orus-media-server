@@ -18,6 +18,7 @@ lint_gui:
 
 # Build the GUI source code
 build_gui:
+	echo "Building GUI"
 	cd $(GUI_DIR) && npm run build
 
 # Generate a hash value for the binary file
@@ -33,3 +34,4 @@ build_dev:
 build: lint_gui build_gui
 	go build -ldflags="-s -w" -o $(DIST_DIR)/$(BINARY_NAME) main.go
 	@make hash
+	echo "Build complete"
