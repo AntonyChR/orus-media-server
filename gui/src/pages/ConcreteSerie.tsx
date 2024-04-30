@@ -91,13 +91,13 @@ const ConcreteSeries = () => {
                         <h1 className='font-bold text-xl'>{titleInfo.Title}</h1>
                         <div className='justify-end flex gap-x-3'>
                             <button
-                                className='bg-red-800 px-2 rounded-md'
+                                className='red-button px-2'
                                 onClick={onPrevChapter}
                             >
                                 Prev
                             </button>
                             <button
-                                className='bg-red-800 px-2 rounded-md'
+                                className='red-button px-2'
                                 onClick={onNextChapter}
                             >
                                 Next

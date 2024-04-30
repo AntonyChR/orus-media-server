@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components{
+    .red-button{
+        background-color: theme(colors.red.800);
+        color: theme(colors.white);
+        border-radius: theme(borderRadius.md);
+        padding: theme(spacing.1) theme(spacing.2);
+        &:active{
+            background-color: theme(colors.red.400);
+        }
+    }
+}

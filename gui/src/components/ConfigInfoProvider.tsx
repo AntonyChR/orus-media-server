@@ -14,12 +14,17 @@ const ConfigInfoProvider: FC<ConfigInfoProviderProps> = ({ className }) => {
             <form action='' className=''>
                 <select className='mr-2 my-2' id='selectInfoProvider'>
                     <option value='omdb'>OMDB</option>
-                    <option disabled value='imdb'>IMDB</option>
-                    <option disabled value='tmdb'>TMDB</option>
+                    <option disabled value='imdb'>
+                        IMDB
+                    </option>
+                    <option disabled value='tmdb'>
+                        TMDB
+                    </option>
                 </select>
                 <input className='' type='text' placeholder='api key' />
                 <p className='text-white italic text-sm'>
-                    <span className='text-red-500'>* </span>You can get an API key from{' '}
+                    <span className='text-red-500'>* </span>You can get an API
+                    key from{' '}
                     <a
                         className='text-blue-500'
                         target='_blank'
@@ -28,9 +33,13 @@ const ConfigInfoProvider: FC<ConfigInfoProviderProps> = ({ className }) => {
                         https://www.omdbapi.com/apikey.aspx
                     </a>
                 </p>
+                <p className='text-white italic text-sm'>
+                    <span className='text-red-500'>* </span>After adding the API
+                    key and there is no information in the database, click on
+                    the "Reset database".
+                </p>
                 <button
-
-                    className='text-white block bg-red-700 p-1 rounded-md my-2 active:bg-red-400'
+                    className='text-white block red-button my-2'
                     type='submit'
                 >
                     Save
