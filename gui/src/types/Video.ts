@@ -2,7 +2,6 @@ export interface Video {
     ID:        number;
     CreatedAt: Date;
     UpdatedAt: Date;
-    DeletedAt: null;
     Name:      string;
     Path:      string;
     IsDir:     boolean;
