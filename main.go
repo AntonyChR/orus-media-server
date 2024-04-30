@@ -142,6 +142,8 @@ func main() {
 	// To solve this we can use a middleware:
 	router.Use(static.Serve("/", static.EmbedFolder(staticContent, "gui/dist")))
 
+	log.Printf("Server running on http://localhost%s", config.PORT)
+
 	err = router.Run(config.PORT)
 
 	if err != nil {
