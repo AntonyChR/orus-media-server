@@ -15,6 +15,7 @@ export const ENDPOINTS = {
         videoWithNoInfo: API_URI + '/media/no-info',
     },
     config: {
-        resetDb: API_URI + '/manage/reset'
+        resetDb: API_URI + '/manage/reset',
+        setApiKey: API_URI + '/manage/api-key',
     },
 };

@@ -94,6 +94,23 @@ const getVideoWithNoTitleInfo = async (): Promise<Video[] | null> => {
 
 }
 
+const setApiKey = async (apiKey: string): Promise<Error | null> => {
+    const url = new URL(ENDPOINTS.config.setApiKey);
+    url.searchParams.append('apiKey', apiKey);
+    try{
+        const resp = await fetch(url.toString(), { method: 'POST'});
+        if (resp.status != 200){
+            return new Error(`Bad request: ${resp.status} - ${resp.statusText}`)
+        }
+        return null
+    }catch(error){
+        if (error instanceof Error){
+            return error
+        }
+        return new Error(`Request error: ${error}`)
+    }
+}
+
 const ApiDb = {
     getAllSubtitles,
     assignVideoIdToSubtitle,
@@ -102,7 +119,8 @@ const ApiDb = {
     getVideoChapterSrc,
     getChapters,
     resetDatabase,
-    getVideoWithNoTitleInfo
+    getVideoWithNoTitleInfo,
+    setApiKey
 }
 
 export default ApiDb;
