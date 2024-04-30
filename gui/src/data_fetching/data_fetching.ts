@@ -83,6 +83,17 @@ const resetDatabase = async (): Promise<Error | null>=> {
 
 }
 
+const getVideoWithNoTitleInfo = async (): Promise<Video[] | null> => {
+    try {
+        const resp = await fetch(ENDPOINTS.media.videoWithNoInfo);
+        const data: Video[] = await resp.json();
+        return data;
+    } catch (error) {
+        return null;
+    }
+
+}
+
 const ApiDb = {
     getAllSubtitles,
     assignVideoIdToSubtitle,
@@ -90,7 +101,8 @@ const ApiDb = {
     getMovieSrc,
     getVideoChapterSrc,
     getChapters,
-    resetDatabase
+    resetDatabase,
+    getVideoWithNoTitleInfo
 }
 
 export default ApiDb;

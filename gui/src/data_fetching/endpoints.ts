@@ -12,6 +12,7 @@ export const ENDPOINTS = {
         allSubtitles: API_URI + '/media/all-subtitles',
         videoSubtitles: API_URI + '/media/video-subtitles',
         subtitlesServer: API_URI + '/media/subtitles',
+        videoWithNoInfo: API_URI + '/media/no-info',
     },
     config: {
         resetDb: API_URI + '/manage/reset'
