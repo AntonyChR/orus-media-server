@@ -10,7 +10,7 @@ interface TitleListProps {
 const TitleList: FC<TitleListProps> = ({ titles }) => {
     return (
         <div>
-            <ul className='grid grid-cols-2 md:grid-cols-4 justify-items-center gap-y-8'>
+            <ul className='grid sm:grid-cols-1 md:grid-cols-3 xl:grid-cols-4 justify-items-center gap-y-8'>
                 {titles.map((title) => (
                     <li key={title.imdbID}>
                         <Link

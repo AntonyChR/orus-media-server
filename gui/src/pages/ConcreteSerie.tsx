@@ -87,7 +87,7 @@ const ConcreteSeries = () => {
         <>
             {titleInfo && (
                 <div className='grid grid-cols-6'>
-                    <div className='text-white col-span-6 flex justify-between'>
+                    <div className='text-white col-span-6 flex justify-between my-3'>
                         <h1 className='font-bold text-xl'>{titleInfo.Title}</h1>
                         <div className='justify-end flex gap-x-3'>
                             <button
@@ -104,7 +104,18 @@ const ConcreteSeries = () => {
                             </button>
                         </div>
                     </div>
-                    <div className='max-h-[80vh]'>
+
+
+
+                    <div className='col-span-6 xl:col-span-5 flex justify-center flex-col'>
+                        <VideoPlayer
+                            className='h-[80vh]'
+                            src={videoSrc}
+                            poster={titleInfo.Poster}
+                            videoId={Number(chapterId)}
+                        />
+                    </div>
+                    <div className='max-h-[80vh] col-span-6 xl:col-span-1'>
                         <div className='text-white flex flex-col bg-gray-900 overflow-y-auto h-full'>
                             {chapters &&
                                 chapters.map((c) => (
@@ -123,14 +134,6 @@ const ConcreteSeries = () => {
                                     </NavLink>
                                 ))}
                         </div>
-                    </div>
-                    <div className='col-span-5 flex justify-center flex-col'>
-                        <VideoPlayer
-                            className='h-[80vh]'
-                            src={videoSrc}
-                            poster={titleInfo.Poster}
-                            videoId={Number(chapterId)}
-                        />
                     </div>
                 </div>
             )}
