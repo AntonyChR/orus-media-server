@@ -32,7 +32,7 @@ const VideoPlayer: FC<VideoPlayerProps> = ({
                             key={sub.Name}
                             src={`${ENDPOINTS.media.subtitlesServer}/${sub.Name}`}
                             srcLang={sub.Lang}
-                            label={sub.Lang}
+                            label={`${sub.Lang}-${sub.Name}`}
                             kind='subtitles'
                         />
                     );
