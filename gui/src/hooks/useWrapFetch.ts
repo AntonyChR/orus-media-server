@@ -1,29 +1,34 @@
 import { useState } from 'react';
 
 /**
- * Custom hook that wraps a fetcher function and returns the data, loading state and error.
- * @param fetcher - Function that fetches the data.
- * @returns data - The fetched data.
- * @returns loading - Whether the fetch is in progress.
- * @returns error - The error that occurred during the fetch.
- * @returns makeRequest - Function that triggers the fetch.
+ * Custom hook that wraps a fetcher function and handles the state for making API requests.
+ *
+ * @template T - The type of data returned by the fetcher function.
+ * @template P - The type of arguments accepted by the fetcher function.
+ * @param {Function} fetcher - The fetcher function that makes the API request.
+ * @returns {Object} - An object containing the data, loading state, error, and a function to make the request.
  */
-export function useWrapFetch<T>(fetcher: () => Promise<T>):{
+// eslint-disable-next-line
+export function useWrapFetch<T, P = any>(
+    fetcher: (args: P) => Promise<T>
+): {
     data: T | null;
     loading: boolean;
     error: Error | null;
-    makeRequest: ()=>void;
+    makeRequest: (args: P) => void;
 } {
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
     /**
-     * Makes the request using the fetcher function and updates the state accordingly.
+     * Function to make the API request.
+     *
+     * @param {P} args - The arguments to be passed to the fetcher function.
      */
-    const makeRequest =  () => {
+    const makeRequest = (args: P) => {
         setLoading(true);
-        fetcher()
+        fetcher(args)
             .then((d) => {
                 setData(d);
                 setLoading(false);
@@ -32,7 +37,7 @@ export function useWrapFetch<T>(fetcher: () => Promise<T>):{
                 setError(e);
                 setLoading(false);
             });
-    }
+    };
 
     return { data, loading, error, makeRequest };
 }
