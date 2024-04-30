@@ -128,6 +128,10 @@ func (s *MediaEventHandlerService) HandleRemoveFile(event MediaChangeEvent) erro
 			return err
 		}
 
+		if video.TitleId == 0 {
+			return s.videoService.DeleteById(video.ID)
+		}
+
 		titleInfo, err := s.TitleInfoService.GetById(video.TitleId)
 
 		if err != nil {
