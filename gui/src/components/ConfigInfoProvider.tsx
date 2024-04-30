@@ -1,9 +1,21 @@
 import { FC } from 'react';
+import { useWrapFetch } from '../hooks/useWrapFetch';
+import ApiDb from '../data_fetching/data_fetching';
+import Loading from './Loading';
 interface ConfigInfoProviderProps {
     className?: string;
 }
 
 const ConfigInfoProvider: FC<ConfigInfoProviderProps> = ({ className }) => {
+
+    const {makeRequest,loading, data} = useWrapFetch<Error|null,string>(ApiDb.setApiKey);
+
+    const onSetApiKey = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const apiKey = (event.currentTarget.children[1] as HTMLInputElement).value;
+        makeRequest(apiKey);
+    }
+
     return (
         <div className={`${className}`}>
             <h2 className='text-white text-xl'>Info provider</h2>
@@ -11,7 +23,7 @@ const ConfigInfoProvider: FC<ConfigInfoProviderProps> = ({ className }) => {
                 Select the info provider you want to use to get information
                 about the videos
             </p>
-            <form action='' className=''>
+            <form onSubmit={onSetApiKey}>
                 <select className='mr-2 my-2' id='selectInfoProvider'>
                     <option value='omdb'>OMDB</option>
                     <option disabled value='imdb'>
@@ -43,8 +55,9 @@ const ConfigInfoProvider: FC<ConfigInfoProviderProps> = ({ className }) => {
                     type='submit'
                 >
                     Save
-                </button>
+                </button>{loading && <Loading/>}
             </form>
+            {data && <p className='text-red-500'>Invalid api key</p>}
         </div>
     );
 };
