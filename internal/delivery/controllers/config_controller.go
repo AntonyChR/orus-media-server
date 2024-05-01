@@ -28,8 +28,9 @@ func (c *ConfigController) SetApiKey(ctx *gin.Context) {
 		return
 	}
 
-	//test api key
+	// test api key
 	log.Println("Testing API key: ", apiKey)
+	// save old api key 
 	old := c.Config.API_KEY
 	c.Config.API_KEY = apiKey
 	if _, err := c.TitleInfoProvider.Search("The Matrix(1999).mp4"); err != nil {
