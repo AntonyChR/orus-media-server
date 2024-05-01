@@ -85,6 +85,20 @@ func main() {
 	)
 	watcher.StartWatching()
 
+	// controllers
+
+	configController := controllers.NewConfigController(
+		&config,
+		omdbInfoProvider,
+		titleInfoService,
+		videoService,
+		mediaInfoSyncService,
+		subtitleService,
+	)
+	videoController := controllers.NewVideoController(videoService)
+	titleInfoController := controllers.NewTitlInfoController(titleInfoService)
+	subtitleController := controllers.NewSubtitleController(subtitleService)
+
 	// API REST
 	gin.SetMode(gin.ReleaseMode)
 
@@ -98,36 +112,27 @@ func main() {
 	router.Use(cors.New(corsConfig))
 	router.Use(middlewares.RedirectToRoot())
 
-	controller := controllers.NewMediaInfoController(
-		videoService,
-		titleInfoService,
-		mediaInfoSyncService,
-		subtitleService,
-	)
-
-	configController := controllers.NewConfigController(&config, omdbInfoProvider)
-
 	manageData := router.Group("/api/manage")
 	{
-		manageData.GET("/reset", controller.ResetDatabase)
+		manageData.GET("/reset", configController.ResetDatabase)
 		manageData.POST("/api-key", configController.SetApiKey)
 	}
 
 	infoRouter := router.Group("/api/media")
 
 	{
-		infoRouter.GET("/titles/all", controller.GetAllTitlesInfo)
-		infoRouter.GET("/titles/series", controller.GetSeries)
-		infoRouter.GET("/titles/movies", controller.GetMovies)
+		infoRouter.GET("/titles/all", titleInfoController.GetAllTitlesInfo)
+		infoRouter.GET("/titles/series", titleInfoController.GetSeries)
+		infoRouter.GET("/titles/movies", titleInfoController.GetMovies)
 
-		infoRouter.GET("/video/all", controller.GetAllVideos)
-		infoRouter.GET("/video/:titleId", controller.GetVideoByTitleId)
-		infoRouter.GET("/no-info", controller.VideosWithNoTitleInfo)
+		infoRouter.GET("/video/all", videoController.GetAllVideos)
+		infoRouter.GET("/video/:titleId", videoController.GetVideoByTitleId)
+		infoRouter.GET("/no-info", videoController.VideosWithNoTitleInfo)
 
-		infoRouter.GET("/all-subtitles", controller.GetAllSubtitles)
-		infoRouter.POST("/video-subtitles/:subtId/:videoId", controller.AssignVideoIdToSubtitles)
+		infoRouter.GET("/all-subtitles", subtitleController.GetAllSubtitles)
+		infoRouter.POST("/video-subtitles/:subtId/:videoId", subtitleController.AssignVideoIdToSubtitles)
 
-		infoRouter.GET("/stream/:videoId", controller.StreamVideo)
+		infoRouter.GET("/stream/:videoId", videoController.StreamVideo)
 		infoRouter.StaticFS("/subtitles", http.Dir(config.SUBTITLE_DIR))
 	}
 
