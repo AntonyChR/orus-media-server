@@ -16,5 +16,12 @@ module.exports = {
       'warn',
       { allowConstantExport: true},
     ],
+    // 'no-restricted-syntax': [
+    //   'error',
+    //   {
+    //     selector: 'JSXAttribute[name.name="className"][value.value=/gap/]',
+    //     message: 'The use of "gap" is not allowed, instead use "margin", "padding", etc..',
+    //   },
+    // ],
   },
 }
