@@ -10,6 +10,7 @@ export default {
 			animation: {
 				fadeIn: 'fadeIn .3s ease-in-out',
 				fadeOut: 'fadeOut ease-in-out',
+				contract: 'contract linear',
 			},
 
 			keyframes: {
@@ -20,8 +21,12 @@ export default {
 				fadeOut: {
 					"0%": { opacity: 0, transform: "translateX(0)"},
 					"20%": { opacity: 1, transform: "translateX(0)" },
-					"80%": { opacity: 1, transform: "translateX(0)" },
+					"90%": { opacity: 1, transform: "translateX(0)" },
 					"100%": { opacity: 0 , transform: "translateX(-100%)"},
+				},
+				contract: {
+					"0%": { width: "100%" },
+					"100%": { width: "0%" },
 				},
 			},
 		},

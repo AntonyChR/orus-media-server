@@ -55,36 +55,45 @@ export const Alert: FC<AlertProps> = ({
     timeout = 3000,
 }) => {
     const timeInSec = timeout / 1000;
-    const [timer, setTimer] = useState(timeInSec);
     const [show, setShow] = useState(true);
 
     const { icon, bg, textColor } = getValueProps(alertType);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setTimer((prev) => prev - 1);
-        }, 1000);
-        const interval2 = setTimeout(() => {
+        const interval = setTimeout(() => {
             setShow(false);
         }, timeout);
         return () => {
-            clearInterval(interval);
-            clearTimeout(interval2);
+            clearTimeout(interval);
         };
-    // eslint-disable-next-line
+        // eslint-disable-next-line
     }, []);
     return (
         <>
             {show && (
                 <div
-                    style={{ backgroundColor: bg, bottom: bottom, animationDuration: `${timeInSec}s`}}
-                    className="flex rounded-md p-2 items-center z-50 animate-fadeOut"
-
+                    style={{
+                        backgroundColor: bg,
+                        bottom: bottom,
+                        animationDuration: `${timeInSec}s`,
+                    }}
+                    className='rounded-md p-2 items-center z-50 animate-fadeOut'
                 >
-                    <img src={icon} alt={alertType} width={30} className='' />
-                    <p style={{ color: textColor }} className='mx-2'>
-                        {message} {timer}
-                    </p>
+                    <div className='flex'>
+                        <img
+                            src={icon}
+                            alt={alertType}
+                            width={30}
+                            className=''
+                        />
+                        <p style={{ color: textColor }} className='mx-2'>
+                            {message}
+                        </p>
+                    </div>
+                    <div
+                        style={{ animationDuration: `${timeInSec}s` }}
+                        className='h-[5px] bg-white w-full animate-contract'
+                    ></div>
                 </div>
             )}
         </>
