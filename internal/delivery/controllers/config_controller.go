@@ -6,7 +6,7 @@ import (
 
 	config "github.com/AntonyChR/orus-media-server/config"
 	domain "github.com/AntonyChR/orus-media-server/internal/domain"
-	"github.com/AntonyChR/orus-media-server/internal/domain/services"
+	services "github.com/AntonyChR/orus-media-server/internal/domain/services"
 	gin "github.com/gin-gonic/gin"
 )
 

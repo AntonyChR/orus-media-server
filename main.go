@@ -96,8 +96,8 @@ func main() {
 		subtitleService,
 	)
 	videoController := controllers.NewVideoController(videoService)
-	titleInfoController := controllers.NewTitlInfoController(titleInfoService)
 	subtitleController := controllers.NewSubtitleController(subtitleService)
+	titleInfoController := controllers.NewTitlInfoController(titleInfoService)
 
 	// API REST
 	gin.SetMode(gin.ReleaseMode)

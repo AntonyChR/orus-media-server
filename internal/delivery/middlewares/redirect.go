@@ -9,6 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Frontend is an SPA, so if the user refreshes the page on a route that is not the root
+// the server will return a 404 error. This middleware will redirect the user to the root
+// where the frontend is served.
 func RedirectToRoot() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 

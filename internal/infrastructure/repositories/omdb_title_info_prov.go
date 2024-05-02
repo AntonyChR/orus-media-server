@@ -24,15 +24,12 @@ func NewOmdbProvider(baseUrlApi string, apiKey *string) *OmdbApiTitleInfoProv {
 // More information can be found at: https://www.omdbapi.com/
 type OmdbApiTitleInfoProv struct {
 	ApiUrl string
-	ApiKey *string
+	ApiKey *string // A pointer is required because the API key can be changed at runtime
 }
 
 // Search searches for movie information based on the provided file name.
 // It returns a models.TitleInfo struct containing the movie information, or an error if the search fails.
 func (m *OmdbApiTitleInfoProv) Search(fileName string) (models.TitleInfo, error) {
-
-	// In this case the OmdbSearchResponse struct fields are the same as the TitleInfo struct fields
-	// so we can use the TitleInfo struct to unmarshal the response.
 
 	var searchResponse OmdbSearchResponse
 	var titleInfo models.TitleInfo
