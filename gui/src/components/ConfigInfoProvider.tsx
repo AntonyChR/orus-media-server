@@ -34,7 +34,7 @@ const ConfigInfoProvider: FC<ConfigInfoProviderProps> = ({ className }) => {
                     </option>
                 </select>
                 <input className='' type='text' placeholder='api key' />
-                <p className='text-white italic text-sm'>
+                <p className='text-white italic text-md my-1'>
                     <span className='text-red-500'>* </span>You can get an API
                     key from{' '}
                     <a
@@ -45,7 +45,7 @@ const ConfigInfoProvider: FC<ConfigInfoProviderProps> = ({ className }) => {
                         https://www.omdbapi.com/apikey.aspx
                     </a>
                 </p>
-                <p className='text-white italic text-sm'>
+                <p className='text-white italic text-md my-1'>
                     <span className='text-red-500'>* </span>After adding the API
                     key and there is no information in the database, click on
                     the "Reset database".
