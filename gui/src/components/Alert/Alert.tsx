@@ -77,7 +77,7 @@ export const Alert: FC<AlertProps> = ({
                         bottom: bottom,
                         animationDuration: `${timeInSec}s`,
                     }}
-                    className='rounded-md p-2 items-center z-50 animate-fadeOut'
+                    className='rounded-md px-2 pt-2 items-center z-50 animate-fadeOut my-2'
                 >
                     <div className='flex'>
                         <img
@@ -92,7 +92,7 @@ export const Alert: FC<AlertProps> = ({
                     </div>
                     <div
                         style={{ animationDuration: `${timeInSec}s` }}
-                        className='h-[5px] bg-white w-full animate-contract'
+                        className='h-[2px] bg-white w-full animate-contract left-[-0.5rem] relative rounded-md'
                     ></div>
                 </div>
             )}
