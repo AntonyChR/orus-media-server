@@ -7,13 +7,13 @@ interface SeriesProps {}
 const Series: FC<SeriesProps> = () => {
     const { series } = useContext(DataContext);
     return (
-        <>
+        <div className=''>
             {series.length > 0 ? (
                 <TitleList titles={series} />
             ) : (
                 <NoData />
             )}
-        </>
+        </div>
     );
 };
 

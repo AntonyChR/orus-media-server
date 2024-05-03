@@ -50,7 +50,7 @@ const ServerLogs: FC<ServerLogsProps> = ({ className }) => {
             </h2>
             <div className='border max-h-[35vh] overflow-y-auto px-2 py-3 focus:scroll-auto flex flex-col-reverse'>
                     {serverEvents.map((event, index) => (
-                        <li className='text-white hover:bg-gray-800' key={event.id}>
+                        <li className='text-white hover:bg-gray-800 animate-flash' key={event.id}>
                             {index}: {event.content}
                         </li>
                     ))}

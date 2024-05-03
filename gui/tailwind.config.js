@@ -11,6 +11,7 @@ export default {
 				fadeIn: 'fadeIn .3s ease-in-out',
 				fadeOut: 'fadeOut ease-in-out',
 				contract: 'contract linear',
+				flash: 'flash 1s linear',
 			},
 
 			keyframes: {
@@ -27,6 +28,10 @@ export default {
 				contract: {
 					"0%": { width: "100%" },
 					"100%": { width: "0%" },
+				},
+				flash: {
+					"0%, 100%": { opacity: 1 },
+					"50%": { opacity: 0 },
 				},
 			},
 		},
