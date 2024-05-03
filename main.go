@@ -4,6 +4,7 @@ import (
 	"embed"
 	"log"
 	"net/http"
+	"time"
 
 	config "github.com/AntonyChR/orus-media-server/config"
 	controllers "github.com/AntonyChR/orus-media-server/internal/delivery/controllers"
@@ -98,6 +99,7 @@ func main() {
 	videoController := controllers.NewVideoController(videoService)
 	subtitleController := controllers.NewSubtitleController(subtitleService)
 	titleInfoController := controllers.NewTitlInfoController(titleInfoService)
+	serverLogsController := controllers.NewServerLogsController()
 
 	// API REST
 	gin.SetMode(gin.ReleaseMode)
@@ -109,13 +111,21 @@ func main() {
 	corsConfig.AllowMethods = []string{"GET", "POST"}
 	corsConfig.AllowCredentials = true
 
+	serverEventChan := make(chan string)
 	router.Use(cors.New(corsConfig))
 	router.Use(middlewares.RedirectToRoot())
+	router.Use(middlewares.HandleReq(serverEventChan))
+
+	go Ticker(serverEventChan)
 
 	manageData := router.Group("/api/manage")
 	{
 		manageData.GET("/reset", configController.ResetDatabase)
 		manageData.POST("/api-key", configController.SetApiKey)
+
+		manageData.GET("/events", middlewares.SSEHeader(), func(ctx *gin.Context) {
+			serverLogsController.ServerEvents(ctx, serverEventChan)
+		})
 	}
 
 	infoRouter := router.Group("/api/media")
@@ -156,5 +166,15 @@ func main() {
 
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func Ticker(serverEventChan chan string) {
+	ticker := time.NewTicker(1 * time.Second)
+	for {
+		select {
+		case <-ticker.C:
+			serverEventChan <- "tick, tack msg"
+		}
 	}
 }
