@@ -6,9 +6,15 @@ import (
 )
 
 func TestCreateConfigFile(t *testing.T) {
-	config := Config{DB_PATH: "./testPath", PORT: ":2000", API_KEY: "test_key"}
+	config := Config{
+		DB_PATH:      "./testPath",
+		PORT:         ":2000",
+		API_KEY:      "test_key",
+		SUBTITLE_DIR: "test_subtitle_dir",
+		MEDIA_DIR:    "test_media_dir",
+	}
 	tmpFilePath := "tmp.toml"
-	if err := save(config, tmpFilePath); err != nil {
+	if err := config.Save(tmpFilePath); err != nil {
 		t.Errorf("Error saving config file: %s", err)
 	}
 
@@ -25,9 +31,15 @@ func TestCreateConfigFile(t *testing.T) {
 }
 
 func TestReadConfigFile(t *testing.T) {
-	config := Config{DB_PATH: "./testPath", PORT: ":2000", API_KEY: "test_key"}
+	config := Config{
+		DB_PATH:      "./testPath",
+		PORT:         ":2000",
+		API_KEY:      "test_key",
+		SUBTITLE_DIR: "test_subtitle_dir",
+		MEDIA_DIR:    "test_media_dir",
+	}
 	tmpFilePath := "tmp2.toml"
-	if err := save(config, tmpFilePath); err != nil {
+	if err := config.Save(tmpFilePath); err != nil {
 		t.Errorf("Error saving config file: %s", err)
 	}
 
@@ -51,4 +63,31 @@ func TestReadConfigFile(t *testing.T) {
 		t.Errorf("Error removing tmp file: %s", err)
 	}
 
+}
+
+func TestLoadConfig(t *testing.T) {
+	config, err := LoadConfig()
+	if err != nil {
+		t.Errorf("Error loading config file: %s", err)
+	}
+
+	if config.DB_PATH == "" {
+		t.Errorf("Error loading DB_PATH: %s", config.DB_PATH)
+	}
+	if config.PORT == "" {
+		t.Errorf("Error loading PORT: %s", config.PORT)
+	}
+
+	if config.MEDIA_DIR == "" {
+		t.Errorf("Error loading MEDIA_DIR: %s", config.MEDIA_DIR)
+	}
+	if config.SUBTITLE_DIR == "" {
+		t.Errorf("Error loading SUBTITLE_DIR: %s", config.SUBTITLE_DIR)
+	}
+
+	if _, err := os.Stat("./config.toml"); err != nil {
+		t.Errorf("Error loading config file: %s", err)
+	}
+
+	os.Remove("./config.toml")
 }
