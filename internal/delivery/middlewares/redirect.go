@@ -6,7 +6,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/gin-gonic/gin"
+	gin "github.com/gin-gonic/gin"
 )
 
 // Frontend is an SPA, so if the user refreshes the page on a route that is not the root

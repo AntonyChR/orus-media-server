@@ -15,14 +15,16 @@ func NewMediaDirWatcher(
 	fileExplorerService domain.MediaFileExplorer,
 	titleInfoProvider domain.TitleInfoProvider,
 	eventHandler EventHandlerService,
+	logEventChannel chan<- string,
 
 ) *WatchMediafileEvents {
 	return &WatchMediafileEvents{
 		WatchedMediaDir:     mediaDir,
-		EventChannel:        make(chan MediaChangeEvent),
+		DirEventChannel:     make(chan MediaDirEvent),
 		FileExplorerService: fileExplorerService,
 		TitleInfoProvider:   titleInfoProvider,
 		EventHandlerService: eventHandler,
+		LogEventChannel:     logEventChannel,
 	}
 }
 
@@ -33,26 +35,27 @@ const (
 	REMOVE_DIR
 )
 
-type MediaChangeEvent struct {
+type MediaDirEvent struct {
 	Type     int
 	FilePath string
 	Error    error
 }
 
 type EventHandlerService interface {
-	HandleNewDir(event MediaChangeEvent) error
-	HandleRemoveDir(event MediaChangeEvent) error
-	HandleNewFile(event MediaChangeEvent) error
-	HandleRemoveFile(event MediaChangeEvent) error
+	HandleNewDir(event MediaDirEvent) error
+	HandleRemoveDir(event MediaDirEvent) error
+	HandleNewFile(event MediaDirEvent) error
+	HandleRemoveFile(event MediaDirEvent) error
 }
 
 type WatchMediafileEvents struct {
 	WatchedMediaDir     string
-	EventChannel        chan MediaChangeEvent
+	DirEventChannel     chan MediaDirEvent
 	EventHandlerService EventHandlerService
 	FileExplorerService domain.MediaFileExplorer
 
 	TitleInfoProvider domain.TitleInfoProvider
+	LogEventChannel   chan<- string
 }
 
 func (w *WatchMediafileEvents) WatchDirectoryEvents() {
@@ -69,13 +72,13 @@ func (w *WatchMediafileEvents) WatchDirectoryEvents() {
 			select {
 			case event, ok := <-watcher.Events:
 				if !ok {
-					w.EventChannel <- MediaChangeEvent{Error: errors.New("error getting channel value")}
+					w.DirEventChannel <- MediaDirEvent{Error: errors.New("error getting channel value")}
 				}
 				if event.Has(fsnotify.Chmod) || event.Has(fsnotify.Write) {
 					continue
 				}
 
-				mediaEvent := MediaChangeEvent{FilePath: event.Name}
+				mediaEvent := MediaDirEvent{FilePath: event.Name}
 
 				switch {
 				case fsnotify.Create == event.Op:
@@ -112,10 +115,10 @@ func (w *WatchMediafileEvents) WatchDirectoryEvents() {
 					}
 				}
 
-				w.EventChannel <- mediaEvent
+				w.DirEventChannel <- mediaEvent
 
 			case err := <-watcher.Errors:
-				w.EventChannel <- MediaChangeEvent{Error: err}
+				w.DirEventChannel <- MediaDirEvent{Error: err}
 			}
 		}
 	}()
@@ -141,12 +144,15 @@ func (w *WatchMediafileEvents) WatchDirectoryEvents() {
 
 func (w *WatchMediafileEvents) ListenMediaEvents() []string {
 	for {
-		event := <-w.EventChannel
+		event := <-w.DirEventChannel
 
 		if event.Error != nil {
 			log.Println(event.Error)
 			continue
 		}
+		go func() {
+			w.LogEventChannel <- createLogFromMediaDirEvent(event)
+		}()
 
 		switch event.Type {
 
@@ -204,4 +210,19 @@ func isInSubdir(mainPath, subdirPath string) bool {
 	splMainPath := strings.Split(mainPath, "/")
 	splSubdir := strings.Split(subdirPath, "/")
 	return len(splSubdir)-len(splMainPath) == 1
+}
+
+func createLogFromMediaDirEvent(event MediaDirEvent) string {
+	const typeEvent = "[Media dir change event] "
+	switch event.Type {
+	case NEW_DIR:
+		return typeEvent + "New directory: " + event.FilePath
+	case NEW_FILE:
+		return typeEvent + "New file: " + event.FilePath
+	case REMOVE_DIR:
+		return typeEvent + "Remove directory: " + event.FilePath
+	case REMOVE_FILE:
+		return typeEvent + "Remove file: " + event.FilePath
+	}
+	return ""
 }

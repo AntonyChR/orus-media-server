@@ -3,7 +3,7 @@ package middlewares
 import (
 	"fmt"
 
-	"github.com/gin-gonic/gin"
+	gin "github.com/gin-gonic/gin"
 )
 
 func HandleReq(serverEventChan chan string) gin.HandlerFunc {
@@ -15,7 +15,7 @@ func HandleReq(serverEventChan chan string) gin.HandlerFunc {
 
 		from := ctx.ClientIP()
 
-		requesLog := fmt.Sprintf("[%s] %s, from %s", method, url, from)
+		requesLog := fmt.Sprintf("[Request] %s: %s, from %s", method, url, from)
 
 		go func() {
 			serverEventChan <- requesLog

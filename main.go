@@ -4,7 +4,6 @@ import (
 	"embed"
 	"log"
 	"net/http"
-	"time"
 
 	config "github.com/AntonyChR/orus-media-server/config"
 	controllers "github.com/AntonyChR/orus-media-server/internal/delivery/controllers"
@@ -43,6 +42,9 @@ func main() {
 		log.Fatal(err)
 	}
 
+	logSSeManager := infrastructure.NewLogSSEManager()
+	go logSSeManager.Start()
+
 	// Instance repositories
 
 	sqliteVideoRepo := repositoryImplementations.NewSqliteVideoRepo(sqliteDb)
@@ -69,6 +71,7 @@ func main() {
 		subtitleService,
 	)
 
+	// watch media file directory events
 	eventHanlder := infrastructure.NewMediaEventHandlerService(
 		config.MEDIA_DIR,
 		titleInfoService,
@@ -77,12 +80,12 @@ func main() {
 		omdbInfoProvider,
 	)
 
-	// watch media file directory events
 	watcher := infrastructure.NewMediaDirWatcher(
 		config.MEDIA_DIR,
 		fileExporer,
 		omdbInfoProvider,
 		eventHanlder,
+		logSSeManager.LogsChannel,
 	)
 	watcher.StartWatching()
 
@@ -99,7 +102,7 @@ func main() {
 	videoController := controllers.NewVideoController(videoService)
 	subtitleController := controllers.NewSubtitleController(subtitleService)
 	titleInfoController := controllers.NewTitlInfoController(titleInfoService)
-	serverLogsController := controllers.NewServerLogsController()
+	serverLogsController := controllers.NewServerLogsController(logSSeManager)
 
 	// API REST
 	gin.SetMode(gin.ReleaseMode)
@@ -111,21 +114,19 @@ func main() {
 	corsConfig.AllowMethods = []string{"GET", "POST"}
 	corsConfig.AllowCredentials = true
 
-	serverEventChan := make(chan string)
 	router.Use(cors.New(corsConfig))
 	router.Use(middlewares.RedirectToRoot())
-	router.Use(middlewares.HandleReq(serverEventChan))
 
-	go Ticker(serverEventChan)
+	router.Use(middlewares.HandleReq(logSSeManager.LogsChannel))
+
+	//go Ticker(serverEventChan)
 
 	manageData := router.Group("/api/manage")
 	{
 		manageData.GET("/reset", configController.ResetDatabase)
 		manageData.POST("/api-key", configController.SetApiKey)
 
-		manageData.GET("/events", middlewares.SSEHeader(), func(ctx *gin.Context) {
-			serverLogsController.ServerEvents(ctx, serverEventChan)
-		})
+		manageData.GET("/events", middlewares.SSEHeader(), serverLogsController.ServerEvents)
 	}
 
 	infoRouter := router.Group("/api/media")
@@ -169,12 +170,12 @@ func main() {
 	}
 }
 
-func Ticker(serverEventChan chan string) {
-	ticker := time.NewTicker(1 * time.Second)
-	for {
-		select {
-		case <-ticker.C:
-			serverEventChan <- "tick, tack msg"
-		}
-	}
-}
+// func Ticker(serverEventChan chan string) {
+// 	ticker := time.NewTicker(1 * time.Second)
+// 	for {
+// 		select {
+// 		case <-ticker.C:
+// 			serverEventChan <- "tick, tack msg"
+// 		}
+// 	}
+// }

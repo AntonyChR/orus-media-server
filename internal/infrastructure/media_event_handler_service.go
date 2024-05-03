@@ -33,7 +33,7 @@ type MediaEventHandlerService struct {
 	TitleInfoProvider   domain.TitleInfoProvider
 }
 
-func (s *MediaEventHandlerService) HandleNewDir(event MediaChangeEvent) error {
+func (s *MediaEventHandlerService) HandleNewDir(event MediaDirEvent) error {
 	fileName := filepath.Base(event.FilePath)
 	titleInfo, err := s.TitleInfoProvider.Search(fileName)
 	if err != nil {
@@ -53,7 +53,7 @@ func (s *MediaEventHandlerService) HandleNewDir(event MediaChangeEvent) error {
 	return err
 }
 
-func (s *MediaEventHandlerService) HandleRemoveDir(event MediaChangeEvent) error {
+func (s *MediaEventHandlerService) HandleRemoveDir(event MediaDirEvent) error {
 	titleInfo, err := s.TitleInfoService.GetByFolder(event.FilePath)
 
 	if err != nil {
@@ -70,7 +70,7 @@ func (s *MediaEventHandlerService) HandleRemoveDir(event MediaChangeEvent) error
 	return err
 }
 
-func (s *MediaEventHandlerService) HandleNewFile(event MediaChangeEvent) error {
+func (s *MediaEventHandlerService) HandleNewFile(event MediaDirEvent) error {
 	dir := filepath.Dir(event.FilePath)
 
 	// if the file is in the root directory of the watched media directory that means it is a movie
@@ -116,7 +116,7 @@ func (s *MediaEventHandlerService) HandleNewFile(event MediaChangeEvent) error {
 
 }
 
-func (s *MediaEventHandlerService) HandleRemoveFile(event MediaChangeEvent) error {
+func (s *MediaEventHandlerService) HandleRemoveFile(event MediaDirEvent) error {
 	dir := filepath.Dir(event.FilePath)
 
 	// if the file is in the root directory of the watched media directory that means it is a movie
