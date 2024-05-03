@@ -17,5 +17,6 @@ export const ENDPOINTS = {
     config: {
         resetDb: API_URI + '/manage/reset',
         setApiKey: API_URI + '/manage/api-key',
+        serverLogs: API_URI + '/manage/events'
     },
 };

@@ -6,13 +6,13 @@ interface MoviesProps {}
 const Movies: FC<MoviesProps> = () => {
     const { movies } = useContext(DataContext);
     return (
-        <>
+        <div className='h-full overflow-y-scroll'>
             {movies.length > 0 ? (
                 <TitleList titles={movies} />
             ) : (
                 <NoData />
             )}
-        </>
+        </div>
     );
 };
 

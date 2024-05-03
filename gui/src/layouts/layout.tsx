@@ -7,9 +7,9 @@ interface layoutProps {
 
 const Layout: FC<layoutProps> = ({ children }) => {
     return (
-        <div className='w-full h-screen bg-gray-950 overflow-auto'>
+        <div className='w-screen h-screen bg-gray-950 overflow-auto'>
             <Navbar />
-            <main className='pt-16 px-7'>{children}</main>
+            <main className='pt-16 px-7 h-full md:overflow-hidden'>{children}</main>
         </div>
     );
 };
