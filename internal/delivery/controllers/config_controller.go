@@ -48,13 +48,18 @@ func (c *ConfigController) SetApiKey(ctx *gin.Context) {
 	log.Println("Testing API key: ", apiKey)
 	old := c.Config.API_KEY
 	c.Config.API_KEY = apiKey
+
 	if _, err := c.TitleInfoProvider.Search("The Matrix(1999).mp4"); err != nil {
 		c.Config.API_KEY = old
 		ctx.String(http.StatusBadRequest, "Invalid API key")
 		return
 	}
 
-	c.Config.API_KEY = apiKey
+	if err := c.Config.Save(config.CONFIG_PATH); err != nil {
+		log.Println(err)
+		ctx.String(http.StatusBadGateway, "Server error")
+		return
+	}
 	ctx.String(200, "API key set successfully")
 }
 
