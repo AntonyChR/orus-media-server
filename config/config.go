@@ -10,12 +10,14 @@ import (
 	toml "github.com/BurntSushi/toml"
 )
 
+var CONFIG_PATH = "config.toml"
+
 type Config struct {
-	DB_PATH   string `toml:"DB_PATH"`
-	PORT      string `toml:"PORT"`
-	MEDIA_DIR string `toml:"MEDIA_DIR"`
+	DB_PATH      string `toml:"DB_PATH"`
+	PORT         string `toml:"PORT"`
+	MEDIA_DIR    string `toml:"MEDIA_DIR"`
 	SUBTITLE_DIR string `toml:"SUBTITLE_DIR"`
-	API_KEY   string `toml:"API_KEY"`
+	API_KEY      string `toml:"API_KEY"`
 }
 
 // LoadConfig loads the configuration from the specified file path.
@@ -34,14 +36,14 @@ func LoadConfig() (Config, error) {
 
 	// return default config
 	defaultConfig := Config{
-		DB_PATH:   "./database.db",
-		PORT:      ":3002",
-		MEDIA_DIR: "./media",
+		DB_PATH:      "./database.db",
+		PORT:         ":3002",
+		MEDIA_DIR:    "./media",
 		SUBTITLE_DIR: "./subtitles",
-		API_KEY:   "",
+		API_KEY:      "",
 	}
 
-	err := save(defaultConfig, path)
+	err := defaultConfig.Save(CONFIG_PATH)
 
 	return defaultConfig, err
 
@@ -68,13 +70,13 @@ func readConfig(configFilePath string) (Config, error) {
 	return config, nil
 }
 
-func save(config Config, path string) error {
+func (c *Config) Save(configFilePath string) error {
 	buf := new(bytes.Buffer)
-	if err := toml.NewEncoder(buf).Encode(config); err != nil {
+	if err := toml.NewEncoder(buf).Encode(c); err != nil {
 		return err
 	}
 
-	err := os.WriteFile(path, buf.Bytes(), os.ModePerm)
+	err := os.WriteFile(configFilePath, buf.Bytes(), os.ModePerm)
 
 	return err
 
