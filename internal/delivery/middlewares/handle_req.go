@@ -17,9 +17,7 @@ func HandleReq(serverEventChan chan string) gin.HandlerFunc {
 
 		requesLog := fmt.Sprintf("[Request] %s: %s, from %s", method, url, from)
 
-		go func() {
-			serverEventChan <- requesLog
-		}()
+		serverEventChan <- requesLog
 
 		ctx.Next()
 	}
