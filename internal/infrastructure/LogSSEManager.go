@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// NewLogSSEManager creates a new instance of LogSSEManager.
 func NewLogSSEManager() *LogSSEManager {
 	return &LogSSEManager{
 		Clients:     make(map[string]*gin.Context),
@@ -14,6 +15,7 @@ func NewLogSSEManager() *LogSSEManager {
 	}
 }
 
+// LogSSEManager manages Server-Sent Events (SSE) for logging purposes.
 type LogSSEManager struct {
 	Clients     map[string]*gin.Context
 	LogsChannel chan string
@@ -28,6 +30,7 @@ func (l *LogSSEManager) Unregister(clientId string) {
 	delete(l.Clients, clientId)
 }
 
+// Start starts the LogSSEManager and listens for logs on the LogsChannel.
 func (l *LogSSEManager) Start() {
 	for {
 		log := <-l.LogsChannel
@@ -35,8 +38,8 @@ func (l *LogSSEManager) Start() {
 	}
 }
 
+// Broadcast sends the log content to all registered clients.
 func (l *LogSSEManager) Broadcast(content string) {
-
 	if len(l.Clients) == 0 {
 		return
 	}
