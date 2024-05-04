@@ -2,11 +2,11 @@ import { FC } from 'react';
 import { useWrapFetch } from '../hooks/useWrapFetch';
 import ApiDb from '../data_fetching/data_fetching';
 import Loading from './Loading';
-interface ConfigInfoProviderProps {
+interface ConfigApiKeyProps {
     className?: string;
 }
 
-const ConfigInfoProvider: FC<ConfigInfoProviderProps> = ({ className }) => {
+const ConfigApiKey: FC<ConfigApiKeyProps> = ({ className }) => {
 
     const {makeRequest,loading, data} = useWrapFetch<Error|null,string>(ApiDb.setApiKey);
 
@@ -62,4 +62,4 @@ const ConfigInfoProvider: FC<ConfigInfoProviderProps> = ({ className }) => {
     );
 };
 
-export default ConfigInfoProvider;
+export default ConfigApiKey;

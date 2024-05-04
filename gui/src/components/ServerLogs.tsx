@@ -37,10 +37,10 @@ const ServerLogs: FC<ServerLogsProps> = ({ className }) => {
 
     return (
         <div className={`${className}`}>
-            <h2 className='text-white text-xl'>
-                Server logs: {connected ? 'CONNECTED' : 'DISCONNECTED'}{' '}
+            <h2 className='text-white text-md flex items-center'>
+                Server logs: {connected ? 'CONNECTED' : 'DISCONNECTED'}
                 <div
-                    className='w-[15px] h-[15px] border inline-block rounded-full'
+                    className='w-[15px] h-[15px] border inline-block rounded-full mx-2'
                     style={{
                         backgroundColor: connected ? 'greenyellow' : 'red',
                     }}
