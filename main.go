@@ -119,8 +119,6 @@ func main() {
 
 	router.Use(middlewares.HandleReq(logSSeManager.LogsChannel))
 
-	//go Ticker(serverEventChan)
-
 	manageData := router.Group("/api/manage")
 	{
 		manageData.GET("/reset", configController.ResetDatabase)
@@ -169,13 +167,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
-// func Ticker(serverEventChan chan string) {
-// 	ticker := time.NewTicker(1 * time.Second)
-// 	for {
-// 		select {
-// 		case <-ticker.C:
-// 			serverEventChan <- "tick, tack msg"
-// 		}
-// 	}
-// }

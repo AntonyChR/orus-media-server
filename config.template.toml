@@ -1,5 +1,5 @@
-DB_PATH = "./database.db"
 PORT = ":3002"
+API_KEY = "512346de9" 
+DB_PATH = "./database.db"
 MEDIA_DIR = "./media"
 SUBTITLE_DIR = "./subtitles"
-API_KEY = "512346de9"
