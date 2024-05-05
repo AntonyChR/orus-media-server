@@ -1,12 +1,13 @@
+import { t } from 'i18next';
 import { Link } from 'react-router-dom';
 
 const NoData = () => {
     return (
         <div>
             <p className='text-white'>
-                no information available, check{' '}
+                {t("No info available")}{' '}
                 <Link to={'/config'} className='text-red-500 underline'>
-                    configuration
+                    {t("Config")}
                 </Link>
             </p>
         </div>

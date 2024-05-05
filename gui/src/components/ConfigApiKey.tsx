@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { useWrapFetch } from '../hooks/useWrapFetch';
 import ApiDb from '../data_fetching/data_fetching';
 import Loading from './Loading';
+import { t } from 'i18next';
 interface ConfigApiKeyProps {
     className?: string;
 }
@@ -18,10 +19,9 @@ const ConfigApiKey: FC<ConfigApiKeyProps> = ({ className }) => {
 
     return (
         <div className={`${className}`}>
-            <h2 className='text-white text-xl'>Info provider</h2>
+            <h2 className='text-white text-xl'>{t("Info provider")}</h2>
             <p className='text-white'>
-                Select the info provider you want to use to get information
-                about the videos
+                {t("Select info provider")}
             </p>
             <form onSubmit={onSetApiKey}>
                 <select className='mr-2 my-2' id='selectInfoProvider'>
@@ -35,8 +35,7 @@ const ConfigApiKey: FC<ConfigApiKeyProps> = ({ className }) => {
                 </select>
                 <input className='' type='text' placeholder='api key' />
                 <p className='text-white italic text-md my-1'>
-                    <span className='text-red-500'>* </span>You can get an API
-                    key from{' '}
+                    <span className='text-red-500'>* </span>{t("Get api key")}{' '}
                     <a
                         className='text-blue-500'
                         target='_blank'
@@ -46,18 +45,16 @@ const ConfigApiKey: FC<ConfigApiKeyProps> = ({ className }) => {
                     </a>
                 </p>
                 <p className='text-white italic text-md my-1'>
-                    <span className='text-red-500'>* </span>After adding the API
-                    key and there is no information in the database, click on
-                    the "Reset database".
+                    <span className='text-red-500'>* </span>{t("After adding api key")}
                 </p>
                 <button
                     className='text-white block red-button my-2'
                     type='submit'
                 >
-                    Save
+                    {t('Save')}
                 </button>{loading && <Loading/>}
             </form>
-            {data && <p className='text-red-500'>Invalid api key</p>}
+            {data && <p className='text-red-500'>{t("Invalid api key")}</p>}
         </div>
     );
 };

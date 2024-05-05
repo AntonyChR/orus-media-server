@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { ENDPOINTS } from '../data_fetching/endpoints';
+import { t } from 'i18next';
 interface ServerLogsProps {
     className: string;
 }
@@ -38,7 +39,7 @@ const ServerLogs: FC<ServerLogsProps> = ({ className }) => {
     return (
         <div className={`${className}`}>
             <h2 className='text-white text-md flex items-center'>
-                Server logs: {connected ? 'CONNECTED' : 'DISCONNECTED'}
+                {t("Server logs")}: {t(connected ? 'Connected' : 'Disconnected')}
                 <div
                     className='w-[15px] h-[15px] border inline-block rounded-full mx-2'
                     style={{

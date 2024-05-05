@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import ApiDb from '../data_fetching/data_fetching';
 import { useWrapFetch } from '../hooks/useWrapFetch';
 import Loading from './Loading';
@@ -10,7 +11,7 @@ const ResetDatabase = () => {
     return (
             <div className='flex'>
                 <button className='red-button' disabled={loading} onClick={makeRequest}>
-                    Reset database
+                    {t('Reset database')}
                 </button>
                 {loading && <Loading/>}
             </div>

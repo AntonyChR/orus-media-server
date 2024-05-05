@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import ApiDb from '../data_fetching/data_fetching';
 import { Video } from '../types/Video';
+import { t } from 'i18next';
 interface VideosWithNoInfoProps {
     className?: string;
 }
@@ -17,11 +18,11 @@ const VideosWithNoInfo: FC<VideosWithNoInfoProps> = ({ className }) => {
     return (
         <div className={`${className}   `}>
             <h2 className='text-white text-xl'>
-                Video files with no information
+                {t('Files with no info')}
             </h2>
             {videosWithNoInfo.length === 0 ? (
                 <p className='text-white italic text-sm'>
-                    Here you will see the videos that have no information
+                    {t('Here videos with no info')}
                 </p>
             ) : (
                 <>

@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
 // active class
 const aC = (isActive: boolean) => (isActive ? 'text-red-500' : 'text-gray-400');
 
 const Navbar = () => {
+    const { t } = useTranslation();
     return (
         <nav className='fixed w-full bg-gray-950 z-20'>
             <ul className='grid grid-cols-2'>
@@ -12,7 +14,7 @@ const Navbar = () => {
                         to={'/movies'}
                         className={({ isActive: v }) => `${aC(v)}`}
                     >
-                        Movies
+                        {t('Movies')}
                     </NavLink>
                     <NavLink
                         to={'/series'}
@@ -26,7 +28,7 @@ const Navbar = () => {
                         className={({ isActive: v }) => `${aC(v)}`}
                         to={'/config'}
                     >
-                        Config
+                        {t('Config')}
                     </NavLink>
                 </li>
             </ul>
