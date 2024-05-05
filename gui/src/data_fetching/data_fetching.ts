@@ -40,12 +40,16 @@ const getAllTitles = async (): Promise<TitleInfo[] | null> => {
     }
 };
 
-const getMovieSrc = async (titleId: number): Promise<string | null> => {
+export interface VideoInfo extends Video{
+    stream: string;
+}
+
+const getVideoInfo = async (titleId: number): Promise<VideoInfo| null> => {
     const url = `${ENDPOINTS.media.videoFileInfo}/${titleId}`;
     try {
         const resp = await fetch(url);
         const data: Video[] = await resp.json();
-        return `${ENDPOINTS.media.videoStream}/${data[0].ID}`;
+        return {stream:`${ENDPOINTS.media.videoStream}/${data[0].ID}`, ...data[0]};
     } catch (error) {
         return null;
     }
@@ -94,7 +98,10 @@ const getVideoWithNoTitleInfo = async (): Promise<Video[] | null> => {
 
 }
 
-const setApiKey = async (apiKey: string): Promise<Error | null> => {
+const setApiKey = async (apiKey?: string): Promise<Error | null> => {
+    if (!apiKey){
+        return new Error('No api key provided')
+    }
     const url = new URL(ENDPOINTS.config.setApiKey);
     url.searchParams.append('apiKey', apiKey);
     try{
@@ -115,7 +122,7 @@ const ApiDb = {
     getAllSubtitles,
     assignVideoIdToSubtitle,
     getAllTitles,
-    getMovieSrc,
+    getVideoInfo,
     getVideoChapterSrc,
     getChapters,
     resetDatabase,
