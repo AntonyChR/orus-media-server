@@ -10,12 +10,12 @@ import { useState } from 'react';
  */
 // eslint-disable-next-line
 export function useWrapFetch<T, P = any>(
-    fetcher: (args: P) => Promise<T>
+    fetcher: (args?: P) => Promise<T>
 ): {
     data: T | null;
     loading: boolean;
     error: Error | null;
-    makeRequest: (args: P) => void;
+    makeRequest: (args?: P) => void;
 } {
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ export function useWrapFetch<T, P = any>(
      *
      * @param {P} args - The arguments to be passed to the fetcher function.
      */
-    const makeRequest = (args: P) => {
+    const makeRequest = (args?: P) => {
         setLoading(true);
         fetcher(args)
             .then((d) => {

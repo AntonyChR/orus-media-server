@@ -12,10 +12,7 @@ interface ServerEvent {
 
 const ServerLogs: FC<ServerLogsProps> = ({ className }) => {
     const [connected, setServerConnected] = useState<boolean>(false);
-    const [serverEvents, setServerEvents] = useState<
-        { id: string; content: string }[]
-    >([]);
-    //const eventSourceRef = useRef<EventSource | null>(null);
+    const [serverEvents, setServerEvents] = useState<ServerEvent[]>([]);
 
     useEffect(() => {
         const eventSourceRef = new EventSource(ENDPOINTS.config.serverLogs);
