@@ -24,6 +24,18 @@ export const resources:Resource = {
 
         // Error page
         'No info available':'No information available, check',
+
+        // floating info card
+        'Duration': 'Duration',
+        'Director': 'Director',
+        'classification': 'Classification',
+
+        // alert messages
+        'Are you sure?':'Are you sure?',
+
+        //subtitles
+        'No subtitles available': 'No subtitles available',
+        '-- subtitles --': '-- subtitles --'
       }
     },
     es: {
@@ -49,6 +61,18 @@ export const resources:Resource = {
 
         // Error page
         'No info available':'No hay información disponible, verifique la',
+
+        // floating info card
+        'Duration': 'Duración',
+        'Director': 'Director',
+        'Classification': 'Clasificación',
+
+        // alert messages
+        'Are you sure?':'¿Estás seguro?',
+
+        //subtitles
+        'No subtitles available': 'No hay subtítulos disponibles',
+        '-- subtitles --': '-- subtítulos --'
       }
     }
   };
