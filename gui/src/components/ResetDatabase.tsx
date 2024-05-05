@@ -8,9 +8,15 @@ const ResetDatabase = () => {
     const {loading, makeRequest } = useWrapFetch<Error | null>(
         ApiDb.resetDatabase
     );
+
+    const onClick = () => {
+        if(!confirm(t('Are you sure?'))) return;
+        makeRequest();
+    }
+
     return (
             <div className='flex'>
-                <button className='red-button' disabled={loading} onClick={makeRequest}>
+                <button className='red-button' disabled={loading} onClick={onClick}>
                     {t('Reset database')}
                 </button>
                 {loading && <Loading/>}
