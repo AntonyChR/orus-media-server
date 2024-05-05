@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { TitleInfo } from '../types/TitleInfo';
 import star from '/star.svg';
+import { t } from 'i18next';
 
 interface FloatingInfoProps {
     titleInfo: TitleInfo;
@@ -13,14 +14,14 @@ const FloatingInfo: FC<FloatingInfoProps> = ({ titleInfo }) => {
         >
             <p>{titleInfo.Plot}</p>
             <p>
-                <span className='font-bold'>Duration</span>: {titleInfo.Runtime}
+                <span className='font-bold'>{t("Duration")}</span>: {titleInfo.Runtime}
             </p>
             <p>
-                <span className='font-bold'>Director</span>:{' '}
+                <span className='font-bold'>{t("Director")}</span>:{' '}
                 {titleInfo.Director}
             </p>
             <p>
-                <span className='font-bold'>classification</span>:{' '}
+                <span className='font-bold'>{t("Classification")}</span>:{' '}
                 {titleInfo.Rated}
             </p>
             <p>
