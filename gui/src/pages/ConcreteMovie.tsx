@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DataContext } from '../providers/dataProvider/context';
 import VideoPlayer from '../components/VideoPlayer';
-import SelectSubtitle from '../components/SelectSubtitle';
+import SelectSubtitles from '../components/SelectSubtitles';
 import ApiDb, { VideoInfo } from '../data_fetching/data_fetching';
 
 const ConcreteMovie = () => {
@@ -42,7 +42,7 @@ const ConcreteMovie = () => {
                         <h1 className='text-white col-span-1'>
                             {titleInfo.Title}
                         </h1>
-                        <SelectSubtitle
+                        <SelectSubtitles
                             videoId={videoInfo.ID}
                             className='col-span-1 flex justify-end'
                         />

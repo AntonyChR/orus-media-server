@@ -2,12 +2,12 @@ import { FC, useContext } from 'react';
 import { DataContext } from '../providers/dataProvider/context';
 import { t } from 'i18next';
 
-interface SelectSubtitleProps {
+interface SelectSubtitlesProps {
     videoId: number;
     className?: string;
 }
 
-const SelectSubtitle: FC<SelectSubtitleProps> = ({ className, videoId }) => {
+const SelectSubtitles: FC<SelectSubtitlesProps> = ({ className, videoId }) => {
     const { subtitles, assignVideoIdToSubtitles } = useContext(DataContext);
 
     const handleChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
@@ -43,4 +43,4 @@ const SelectSubtitle: FC<SelectSubtitleProps> = ({ className, videoId }) => {
     );
 };
 
-export default SelectSubtitle;
+export default SelectSubtitles;
