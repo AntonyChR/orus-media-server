@@ -64,9 +64,14 @@ export const DataProvider: FC<Props> = ({ children }) => {
         videoId: number,
         subtitleId: number
     ) => {
+        console.log('assigning video id to subtitle');
         const err = await ApiDb.assignVideoIdToSubtitle(videoId, subtitleId);
-        if (err) {
-            // show error alert
+        if (err !== null) {
+            showAlert({
+                message: 'Error assigning subtitle',
+                alertType: 'error',
+                timeout: 3000,
+            });
             return;
         }
         const subtitles = titles.subtitles.map((sub) => {

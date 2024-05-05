@@ -3,12 +3,12 @@ import { useParams } from 'react-router-dom';
 import { DataContext } from '../providers/dataProvider/context';
 import VideoPlayer from '../components/VideoPlayer';
 import SelectSubtitle from '../components/SelectSubtitle';
-import ApiDb from '../data_fetching/data_fetching';
+import ApiDb, { VideoInfo } from '../data_fetching/data_fetching';
 
 const ConcreteMovie = () => {
-    const [videoSrc, setVideoSrc] = useState('');
+    const [videoInfo, setVideoInfo] = useState<VideoInfo|null>(null);
     const { movieId } = useParams();
-        const { movies, assignVideoIdToSubtitles } = useContext(DataContext);
+    const { movies } = useContext(DataContext);
 
     let titleInfo = null;
 
@@ -19,40 +19,39 @@ const ConcreteMovie = () => {
         }
     }
 
-    const onSelectSubtitle = (subtitleId: number) => {
-        if (titleInfo) {
-            assignVideoIdToSubtitles(titleInfo.ID, subtitleId);
-        }
-    }
-
     useEffect(() => {
         if (!titleInfo) return;
-        ApiDb.getMovieSrc(titleInfo?.ID).then((resp: string | null) => {
+        ApiDb.getVideoInfo(titleInfo?.ID).then((resp: VideoInfo | null) => {
             if (resp) {
-                setVideoSrc(String(resp));
+                setVideoInfo(resp);
             }
         });
     }, [titleInfo]);
 
     useEffect(() => {
         return () => {
-            setVideoSrc('');
+            setVideoInfo(null);
         };
     }, []);
 
     return (
         <div>
-            {titleInfo && (
+            {titleInfo && videoInfo && (
                 <div>
                     <div className='grid grid-cols-2 w-full'>
-                        <h1 className='text-white col-span-1'>{titleInfo.Title}</h1>
-                        <SelectSubtitle className='col-span-1 flex justify-end' onSelect={onSelectSubtitle}/>
+                        <h1 className='text-white col-span-1'>
+                            {titleInfo.Title}
+                        </h1>
+                        <SelectSubtitle
+                            videoId={videoInfo.ID}
+                            className='col-span-1 flex justify-end'
+                        />
                     </div>
                     <div className='flex justify-center w h-full'>
                         <VideoPlayer
                             className='w-[80vw] h-[80vh]'
-                            src={videoSrc}
-                            videoId={titleInfo.ID}
+                            src={videoInfo.stream}
+                            videoId={videoInfo.ID}
                             poster={titleInfo.Poster}
                         />
                     </div>
