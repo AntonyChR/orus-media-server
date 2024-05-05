@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "i18next": "^23.11.3",
+    "react-i18next": "^14.1.1"
+  }
+}
