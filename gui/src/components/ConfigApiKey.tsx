@@ -3,6 +3,7 @@ import { useWrapFetch } from '../hooks/useWrapFetch';
 import ApiDb from '../data_fetching/data_fetching';
 import Loading from './Loading';
 import { t } from 'i18next';
+import ResetDatabase from './ResetDatabase';
 interface ConfigApiKeyProps {
     className?: string;
 }
@@ -33,7 +34,7 @@ const ConfigApiKey: FC<ConfigApiKeyProps> = ({ className }) => {
                         TMDB
                     </option>
                 </select>
-                <input className='' type='text' placeholder='api key' />
+                <input className='' type='text' placeholder='api key' required />
                 <p className='text-white italic text-md my-1'>
                     <span className='text-red-500'>* </span>{t("Get api key")}{' '}
                     <a
@@ -53,6 +54,7 @@ const ConfigApiKey: FC<ConfigApiKeyProps> = ({ className }) => {
                 >
                     {t('Save')}
                 </button>{loading && <Loading/>}
+                <ResetDatabase/>
             </form>
             {data && <p className='text-red-500'>{t("Invalid api key")}</p>}
         </div>
