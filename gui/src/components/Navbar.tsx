@@ -20,7 +20,7 @@ const Navbar = () => {
                         to={'/series'}
                         className={({ isActive: v }) => `${aC(v)}`}
                     >
-                        Series
+                        {t('Series')}
                     </NavLink>
                 </li>
                 <li className={'col-span-1 justify-end flex p-4'}>

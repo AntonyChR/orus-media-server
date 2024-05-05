@@ -1,42 +1,43 @@
-import { FC, useContext, useState } from 'react';
+import { FC, useContext } from 'react';
 import { DataContext } from '../providers/dataProvider/context';
+import { t } from 'i18next';
+
 interface SelectSubtitleProps {
-    onSelect: (subtitleId: number) => void;
+    videoId: number;
     className?: string;
 }
 
-const SelectSubtitle: FC<SelectSubtitleProps> = ({ onSelect, className }) => {
-    const { subtitles } = useContext(DataContext);
-    const [selectedSubtitle, setSelectedSubtitle] = useState<number>(0);
+const SelectSubtitle: FC<SelectSubtitleProps> = ({ className, videoId }) => {
+    const { subtitles, assignVideoIdToSubtitles } = useContext(DataContext);
+
     const handleChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
-        setSelectedSubtitle(Number(e.target.value));
-        onSelect(Number(e.target.value));
+        const subId = Number(e.target.value);
+        assignVideoIdToSubtitles(videoId, subId);
     };
 
     return (
         <div className={className}>
             {subtitles.length === 0 ? (
-                <p className=''>No subtitles available</p>
+                <p className=''>{t('No subtitles available')}</p>
             ) : (
-                <>
-                    <label htmlFor='subtitle' className='text-white'>
-                        Available subtitles:
-                    </label>
-                    <select
+                <select
                     className='rounded-md ml-3 bg-gray-700 text-white'
-                        onChange={handleChange}
-                        value={selectedSubtitle}
-                        id='subtitle'
-                    >
-                        {subtitles.map((subtitle) => {
-                            return (
-                                <option key={subtitle.Name} value={subtitle.ID}>
-                                    {subtitle.Name}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </>
+                    onChange={handleChange}
+                    //value={selectedSubId}
+                    defaultValue={0}
+                    id='subtitle'
+                >
+                    <option value={0} disabled>
+                        {t('-- subtitles --')}
+                    </option>
+                    {subtitles.map((subtitle) => {
+                        return (
+                            <option key={subtitle.Name} value={subtitle.ID}>
+                                {subtitle.Name}
+                            </option>
+                        );
+                    })}
+                </select>
             )}
         </div>
     );
