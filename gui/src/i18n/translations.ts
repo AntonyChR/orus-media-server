@@ -22,6 +22,14 @@ export const resources:Resource = {
         'Disconnected':'Disconnected',
         'Reset database':'Reset database',
 
+        'Directory structure':'Directory structure',
+        'The directory structure should be like:':'The directory structure containing the media files must be as follows:',
+
+        'Name format':'The name format of the media files must be as follows:',
+        'Movie name format':'Name of a movie file: "movie name (year).ext"',
+        'Serie name format':'Series folder name format: "serie name (year)/sXeY.ext"',
+        'Example directory':'Example directory',
+
         // Error page
         'No info available':'No information available, check',
 
@@ -58,6 +66,13 @@ export const resources:Resource = {
         'Connected':'Conectado',
         'Disconnected':'Desconectado',
         'Reset database':'Restablecer base de datos',
+
+        'Directory structure':'Estructura de directorios',
+        'The directory structure should be like:':'La estructura de directorios que contiene los archivos multimedia debe ser la siguiente:',
+        'Name format':'El formato de nombre de los archivos multimedia debe ser el siguiente:',
+        'Movie name format':'Nombre de una película: "nombre de la pelicula (año).ext"',
+        'Serie name format':'Nombre de la carpeta de una serie: "nombre de la serie (año)/sXeY.ext"',
+        'Example directory':'Directorio de ejemplo',
 
         // Error page
         'No info available':'No hay información disponible, verifique la',
