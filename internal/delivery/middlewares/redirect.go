@@ -23,7 +23,7 @@ func RedirectToRoot() gin.HandlerFunc {
 
 		splittedUrl := strings.Split(url, "/")
 
-		s := []string{"movie", "movies", "series"}
+		s := []string{"movie", "movies", "series", "config"}
 		if slices.Contains(s, splittedUrl[1]) {
 			ctx.Redirect(http.StatusMovedPermanently, "/")
 			log.Printf("Redirect: \"%s\" -> \"%s\"", url, "\"/\"")
