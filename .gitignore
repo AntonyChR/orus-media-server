@@ -5,3 +5,4 @@ app
 **/*.mp4
 config.toml
 subtitles/
+node_modules/
