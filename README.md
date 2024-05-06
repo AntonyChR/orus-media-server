@@ -35,7 +35,7 @@ Once you have the required software installed, follow these steps to install the
     PORT = ":3002"
     API_KEY = "here your api key"
     DB_PATH = "./database.db"
-    MEDIA_DIR = "./temp"
+    MEDIA_DIR = "./media"
     SUBTITLE_DIR = "./subtitles"
     ```
 
