@@ -47,10 +47,11 @@ const ConcreteSeries = () => {
 
     useEffect(() => {
         if (chapters && chapters.length>0 && chapterId == '0') {
+            console.log("Navigating to first chapter")
             navigate(`/series/${titleInfo!.ID}/${chapters[0].ID}`);
         }
         // eslint-disable-next-line
-    }, [chapters]);
+    }, [chapterId, chapters]);
 
     const onNextChapter = () => {
         if (!chapters) return;
