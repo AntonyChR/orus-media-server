@@ -34,8 +34,8 @@ const ServerLogs: FC<ServerLogsProps> = ({ className }) => {
     }, []);
 
     return (
-        <div className={`${className}`}>
-            <h2 className='text-white text-md flex items-center'>
+        <div className={`${className} pr-4`}>
+            <h2 className='text-white text-md flex items-center mb-3'>
                 {t("Server logs")}: {t(connected ? 'Connected' : 'Disconnected')}
                 <div
                     className='w-[15px] h-[15px] border inline-block rounded-full mx-2'
@@ -46,10 +46,10 @@ const ServerLogs: FC<ServerLogsProps> = ({ className }) => {
                     {' '}
                 </div>
             </h2>
-            <div className='border max-h-[35vh] overflow-y-auto px-2 py-3 focus:scroll-auto flex flex-col-reverse'>
-                    {serverEvents.map((event, index) => (
+            <div className='h-[35vh] overflow-y-auto px-2 py-3 focus:scroll-auto bg-gray-800'>
+                    {serverEvents.map((event) => (
                         <li className='text-white hover:bg-gray-800 animate-flash' key={event.id}>
-                            {index}: {event.content}
+                            {event.content}
                         </li>
                     ))}
             </div>

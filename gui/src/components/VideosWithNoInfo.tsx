@@ -16,8 +16,8 @@ const VideosWithNoInfo: FC<VideosWithNoInfoProps> = ({ className }) => {
         });
     }, []);
     return (
-        <div className={`${className}   `}>
-            <h2 className='text-white text-xl'>
+        <div className={`${className}`}>
+            <h2 className='text-white text-xl mb-3'>
                 {t('Files with no info')}
             </h2>
             {videosWithNoInfo.length === 0 ? (
@@ -26,7 +26,7 @@ const VideosWithNoInfo: FC<VideosWithNoInfoProps> = ({ className }) => {
                 </p>
             ) : (
                 <>
-                    <div className='text-white p-3'>
+                    <div className='text-white bg-gray-800 p-3'>
                         <ul className=''>
                             {videosWithNoInfo.map((video) => {
                                 return (

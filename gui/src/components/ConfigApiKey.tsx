@@ -40,7 +40,7 @@ const ConfigApiKey: FC<ConfigApiKeyProps> = ({ className }) => {
                     placeholder='api key'
                     required
                 />
-                <p className='text-white italic text-md my-1'>
+                <p className='text-white italic text-sm my-1'>
                     <span className='text-red-500'>* </span>
                     {t('Get api key')}{' '}
                     <a
@@ -51,7 +51,7 @@ const ConfigApiKey: FC<ConfigApiKeyProps> = ({ className }) => {
                         https://www.omdbapi.com/apikey.aspx
                     </a>
                 </p>
-                <p className='text-white italic text-md my-1'>
+                <p className='text-white italic font-semibold text-sm my-1'>
                     <span className='text-red-500'>* </span>
                     {t('After adding api key')}
                 </p>
