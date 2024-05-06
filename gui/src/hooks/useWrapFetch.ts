@@ -26,17 +26,18 @@ export function useWrapFetch<T, P = any>(
      *
      * @param {P} args - The arguments to be passed to the fetcher function.
      */
-    const makeRequest = (args?: P) => {
+    const makeRequest = async (args?: P) => {
         setLoading(true);
-        fetcher(args)
-            .then((d) => {
-                setData(d);
-                setLoading(false);
-            })
-            .catch((e) => {
+        try {
+            const d = await fetcher(args);
+            setData(d);
+            setLoading(false);
+        } catch (e) {
+            if (e instanceof Error) {
                 setError(e);
-                setLoading(false);
-            });
+            }
+            setLoading(false);
+        }
     };
 
     return { data, loading, error, makeRequest };
