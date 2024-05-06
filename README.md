@@ -4,12 +4,12 @@
 
 ## Development Environment Setup
 
-To prepare the development environment for Orus media server, please ensure that you have the following software installed:
+To prepare the development environment:
 
-- Node.js 18 or higher
-- Golang 1.17 or later
+- Node.js >= 18 
+- Golang >= 1.20 
 
-Once you have the required software installed, follow these steps to install the necessary dependencies and data:
+To install the necessary dependencies and data:
 
 1. Clone the repository:
 
