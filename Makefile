@@ -2,7 +2,7 @@
 # Directory where the GUI source code is located
 GUI_DIR := gui
 
-# Directory where the built GUI files will be placed
+# Binary dir
 DIST_DIR := dist
 
 # Name of the binary file
