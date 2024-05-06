@@ -26,7 +26,7 @@ const ResetDatabase = () => {
 
     return (
             <div className='flex'>
-                <button className='red-button' disabled={!loading} onClick={onClick}>
+                <button className='red-button' disabled={loading} onClick={onClick}>
                     {t('Reset database')}
                 </button>
                 {loading && <Loading/>}
