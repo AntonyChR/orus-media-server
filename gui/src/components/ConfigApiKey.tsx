@@ -60,6 +60,7 @@ const ConfigApiKey: FC<ConfigApiKeyProps> = ({ className }) => {
                     <button
                         className='text-white red-button'
                         type='submit'
+                        disabled={loading}
                     >
                         {t('Save')}
                     </button>
