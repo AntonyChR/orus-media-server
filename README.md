@@ -14,7 +14,7 @@ Once you have the required software installed, follow these steps to install the
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/ivan/projects/go/orus-media-server.git
+    git clone https://github.com/AntonyChR/orus-media-server
     ```
 
 2. Navigate to the project directory:
