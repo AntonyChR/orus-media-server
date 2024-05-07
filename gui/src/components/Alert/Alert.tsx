@@ -77,7 +77,7 @@ export const Alert: FC<AlertProps> = ({
                         bottom: bottom,
                         animationDuration: `${timeInSec}s`,
                     }}
-                    className='rounded-md px-2 pt-2 items-center z-50 animate-fadeOut my-2'
+                    className='rounded-md px-2 pt-2 items-center z-50 animate-fadeOut my-2 overflow-hidden'
                 >
                     <div className='flex'>
                         <img
