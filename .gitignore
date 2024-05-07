@@ -6,3 +6,4 @@ app
 config.toml
 subtitles/
 node_modules/
+*.zip
