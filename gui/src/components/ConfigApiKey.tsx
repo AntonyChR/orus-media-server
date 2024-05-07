@@ -1,23 +1,32 @@
-import { FC } from 'react';
-import { useWrapFetch } from '../hooks/useWrapFetch';
+import { FC, useContext, useState } from 'react';
 import ApiDb from '../data_fetching/data_fetching';
 import Loading from './Loading';
 import { t } from 'i18next';
 import ResetDatabase from './ResetDatabase';
+import { AlertContext } from './Alert/AlertContext';
 interface ConfigApiKeyProps {
     className?: string;
 }
 
 const ConfigApiKey: FC<ConfigApiKeyProps> = ({ className }) => {
-    const { makeRequest, loading, data } = useWrapFetch<Error | null, string>(
-        ApiDb.setApiKey
-    );
+    const [loading, setLoading] = useState(false);
 
-    const onSetApiKey = (event: React.FormEvent<HTMLFormElement>) => {
+    const {showAlert} = useContext(AlertContext)
+
+    const onSetApiKey = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setLoading(true);
         const apiKey = (event.currentTarget.children[1] as HTMLInputElement)
             .value;
-        makeRequest(apiKey);
+        //makeRequest(apiKey);
+        const resp = await ApiDb.setApiKey(apiKey)
+
+        if(resp === null){
+            showAlert({alertType:'success', message:t('Api key was added'), timeout:5000})
+        }else{
+            showAlert({alertType:'error', message:t('Invalid api key'), timeout:5000})
+        }
+        setLoading(false);
     };
 
     return (
@@ -55,7 +64,6 @@ const ConfigApiKey: FC<ConfigApiKeyProps> = ({ className }) => {
                     <span className='text-red-500'>* </span>
                     {t('After adding api key')}
                 </p>
-                {data && <p className='text-red-500'>{t('Invalid api key')}</p>}
                 <div className='flex my-2'>
                     <button
                         className='text-white red-button'
