@@ -44,10 +44,9 @@ hash:
 build_dev: main.go
 	go build -o $(DIST_DIR)/debug/$(BINARY_NAME) main.go
 
-# Build the application by running lint_gui, build_gui, and hash targets
+# Build the application by running build_gui and hash targets
 # Avoid debugging information in the binary file by using the -s and -w flags
-build: main.go lint_gui build_gui
+build: main.go build_gui
 	@echo "Building application"
 	go build -ldflags="-s -w" -o $(DIST_DIR)/$(BINARY_NAME) main.go
-	make hash
 	@echo "Build complete"
