@@ -40,6 +40,8 @@ export const resources:Resource = {
 
         // alert messages
         'Are you sure?':'Are you sure?',
+        'Api key is required':'Api key is required',
+        'Api key was added':'Api key was added',
 
         //subtitles
         'No subtitles available': 'No subtitles available',
@@ -84,6 +86,8 @@ export const resources:Resource = {
 
         // alert messages
         'Are you sure?':'¿Estás seguro?',
+        'Api key is required':'Se requiere una api-key',
+        'Api key was added':'Se agrego correctamente la api-key',
 
         //subtitles
         'No subtitles available': 'No hay subtítulos disponibles',
