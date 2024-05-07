@@ -10,7 +10,7 @@ GITHUB_REPO="AntonyChR/orus-media-server"
 
 CREATE_RELEASE_URL="https://api.github.com/repos/$GITHUB_REPO/releases"
 
-RESP="$(curl -s -L \
+RESP="$(curl -L \
   -X POST \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $GITHUB_TOKEN" \
@@ -19,7 +19,9 @@ RESP="$(curl -s -L \
   -d "{\"tag_name\":\"$TAG_NAME\",\"target_commitish\":\"main\",\"name\":\"$TAG_NAME\",\"body\":\"$DESCRIPTION\",\"draft\":false,\"prerelease\":false,\"generate_release_notes\":false}")"
 
 
-RELEASE_ID="$(echo $RESP | grep "\"id\"" | head -n 1 | awk '{print $2}' | cut -d ',' -f 1)"
+RELEASE_ID="$(echo $RESP | grep -o "\"id\":\s*[0-9]*" | grep -o "[0-9]*" | head -1)"
+
+echo "Release ID: $RELEASE_ID"
 
 if [ -z "$RELEASE_ID" ]; then
   echo "Failed to create release"
@@ -31,10 +33,9 @@ ZIP_FILE="orus-media-server-$TAG_NAME.zip"
 zip -j $ZIP_FILE dist/app
 
 # Upload the zip file
-
 UPLOAD_ASSETS_URL="https://uploads.github.com/repos/$GITHUB_REPO/releases/$RELEASE_ID/assets?name=$ZIP_FILE"
 
-curl -s -L \
+curl -L \
   -X POST \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $GITHUB_TOKEN" \
