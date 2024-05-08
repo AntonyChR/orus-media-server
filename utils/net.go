@@ -1,13 +1,31 @@
 package utils
 
-import "net"
+import (
+	"errors"
+	"net"
+)
 
 func GetLocalIP() (string, error) {
-	conn, err := net.Dial("udp", "8.8.8.8:80")
+	var ip string
+	addresses, err := net.InterfaceAddrs()
 	if err != nil {
 		return "", err
 	}
-	defer conn.Close()
-	localAddress := conn.LocalAddr().(*net.UDPAddr)
-	return localAddress.IP.String(), nil
+
+	for _, addr := range addresses {
+		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				if ipnet.IP.String()[0:3] == "192" {
+					ip = ipnet.IP.String()
+					break
+				}
+			}
+		}
+	}
+
+	if ip == "" {
+		return "", errors.New("error getting local ip address")
+	}
+
+	return ip, nil
 }
