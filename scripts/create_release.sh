@@ -19,6 +19,12 @@ RESP="$(curl -L \
   -d "{\"tag_name\":\"$TAG_NAME\",\"target_commitish\":\"main\",\"name\":\"$TAG_NAME\",\"body\":\"$DESCRIPTION\",\"draft\":false,\"prerelease\":false,\"generate_release_notes\":false}")"
 
 
+if [ -z "$RESP" ]; then
+  echo "Failed to create release"
+  exit 1
+fi
+
+
 RELEASE_ID="$(echo $RESP | grep -o "\"id\":\s*[0-9]*" | grep -o "[0-9]*" | head -1)"
 
 echo "Release ID: $RELEASE_ID"
