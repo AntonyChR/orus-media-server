@@ -29,7 +29,7 @@ if [ -z "$RELEASE_ID" ]; then
 fi
 
 # Generate zip file
-ZIP_FILE="orus-media-server-$TAG_NAME.zip"
+ZIP_FILE="orus-media-server_${TAG_NAME}_amd64.zip"
 zip -j $ZIP_FILE dist/app
 
 # Upload the zip file
