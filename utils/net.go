@@ -12,12 +12,15 @@ func GetLocalIP() (string, error) {
 		return "", err
 	}
 
-	for _, addr := range addresses {
+	for index, addr := range addresses {
 		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
 			if ipnet.IP.To4() != nil {
 				if ipnet.IP.String()[0:3] == "192" {
 					ip = ipnet.IP.String()
 					break
+				}
+				if index == len(addresses)-1 {
+					ip = ipnet.IP.String()
 				}
 			}
 		}

@@ -146,8 +146,6 @@ func main() {
 		infoRouter.StaticFS("/subtitles", http.Dir(config.SUBTITLE_DIR))
 	}
 
-	// serve subtitle files
-
 	// serve embed web app
 	//
 	// Due to the way paths are treated, gin does not allow the use of the
@@ -163,8 +161,8 @@ func main() {
 	localIp, err := utils.GetLocalIP()
 
 	if err != nil {
+		log.Println("Error getting local ip address")
 		log.Println(err)
-		localIp = "0.0.0.0"
 	}
 
 	utils.PrintServerInfo(localIp, config.PORT)
