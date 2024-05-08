@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Checking dependencies"
+
 node_version=$(node --version 2>/dev/null)
 
 if [[ -z $node_version ]]; then

@@ -36,6 +36,7 @@ fi
 
 # Generate zip file
 ZIP_FILE="orus-media-server_${TAG_NAME}_amd64.zip"
+echo "Generating zip file: $ZIP_FILE"
 mv dist/app orus-media-server
 zip $ZIP_FILE orus-media-server
 
