@@ -73,9 +73,10 @@ To prepare the development environment:
     ```bash
     npm run dev
     ```
+5. Open http://localhost:5173/config in your browser and click "Reset Database".
 
 
-This will set up the development environment for Orus media server and install all the required dependencies and data.
+This will set up the development environment for Orus media server and install all the required dependencies and create fake data.
 
 ## Build and run the application
 
@@ -88,21 +89,8 @@ This will generate the following files in ```dist/``` directory:
 
 ```sh
 app #binary aplication
-app.sha256sum # hash file
 ```
-
 
 When you first run the application binary, it will generate the "config.toml" file with the default configuration.
 
-```toml
-# config.toml
-PORT = ":3002"
-API_KEY = "here your api key"
-DB_PATH = "./database.db"
-MEDIA_DIR = "./media"
-SUBTITLE_DIR = "./subtitles"
-```
-
-__This configuration indicates that the web application will be served at http://localhost:3002, and that the directories containing the video files and subtitles are "./media" and "./subtitles" respectively.__
-
-__After modifying the configuration file, you must reset the database at the URL http://localhost:3002/config.__
+__Continue with the first section: [Setup](https://github.com/AntonyChR/orus-media-server#Setup)__
