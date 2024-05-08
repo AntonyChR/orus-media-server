@@ -30,6 +30,14 @@ Media server with a simple and intuitive interface
     ```
 6. The organization of video files should have the following structure:
 
+    ![Directory structure](./screenshots/directory_structure.webp)
+
+    Name formats:
+    * Movie file: "movie name (year).ext"
+    * TV series folder: "series name (year)/"
+    * TV series episode: "sXeY.ext"
+    * Subtitles: "movie name (year).lang.vtt"
+
 ## Development Environment Setup
 
 To prepare the development environment:
