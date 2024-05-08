@@ -1,6 +1,34 @@
 # Orus media server
 
+Media server with a simple and intuitive interface
+
 ![screenshot](./screenshots/movies_page.webp)
+
+[OMDB](https://www.omdbapi.com/) is used to obtain the information
+
+## Setup
+
+1. Get the api key from https://www.omdbapi.com/apikey.aspx
+2. run the binary application (get it from [releases](https://github.com/AntonyChR/orus-media-server/releases))
+
+3. On the first run the "media/" and "subtitles/" folders will be generated where you need to organize the video files, you can change them by editing the "config.toml" file.
+    ```bash
+    # Generated files
+    config.toml
+    database.db
+    media/
+    subtitles/
+    ```
+5. Open http://localhost:3002/config in your browser and set the API key or change the "API_KEY" value in the generated "config.toml" file in the same directory as the binary.
+    ```toml
+    # config.toml
+    PORT = ":3002"
+    API_KEY = "here your api key"
+    DB_PATH = "./database.db"
+    MEDIA_DIR = "./media"
+    SUBTITLE_DIR = "./subtitles"
+    ```
+6. The organization of video files should have the following structure:
 
 ## Development Environment Setup
 
