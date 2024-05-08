@@ -30,7 +30,8 @@ fi
 
 # Generate zip file
 ZIP_FILE="orus-media-server_${TAG_NAME}_amd64.zip"
-zip -j $ZIP_FILE dist/app
+mv dist/app orus-media-server
+zip $ZIP_FILE orus-media-server
 
 # Upload the zip file
 UPLOAD_ASSETS_URL="https://uploads.github.com/repos/$GITHUB_REPO/releases/$RELEASE_ID/assets?name=$ZIP_FILE"
