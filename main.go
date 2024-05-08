@@ -160,7 +160,12 @@ func main() {
 	// To solve this we can use a middleware:
 	router.Use(static.Serve("/", static.EmbedFolder(staticContent, "gui/dist")))
 
-	localIp, _ := utils.GetLocalIP()
+	localIp, err := utils.GetLocalIP()
+
+	if err != nil {
+		log.Println(err)
+		localIp = "0.0.0.0"
+	}
 
 	utils.PrintServerInfo(localIp, config.PORT)
 
