@@ -18,8 +18,11 @@ install:
 
 # prepare dev enviroment
 prepare:
+	@echo "Preparing dev environment"
 	chmod +x ./git-hooks/*
 	chmod +x ./${SCRIPTS}/*.sh
+	
+	./${SCRIPTS}/check_dependencies.sh
 	./${SCRIPTS}/set_git_hooks.sh
 	./${SCRIPTS}/create_fake_data.sh
 
