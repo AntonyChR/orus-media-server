@@ -11,6 +11,7 @@ import (
 	services "github.com/AntonyChR/orus-media-server/internal/domain/services"
 	infrastructure "github.com/AntonyChR/orus-media-server/internal/infrastructure"
 	repositoryImplementations "github.com/AntonyChR/orus-media-server/internal/infrastructure/repositories"
+	utils "github.com/AntonyChR/orus-media-server/utils"
 	cors "github.com/gin-contrib/cors"
 
 	static "github.com/gin-contrib/static"
@@ -159,7 +160,9 @@ func main() {
 	// To solve this we can use a middleware:
 	router.Use(static.Serve("/", static.EmbedFolder(staticContent, "gui/dist")))
 
-	log.Printf("Server running on http://localhost%s", config.PORT)
+	localIp, _ := utils.GetLocalIP()
+
+	utils.PrintServerInfo(localIp, config.PORT)
 
 	err = router.Run(config.PORT)
 
