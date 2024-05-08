@@ -1,6 +1,10 @@
+<div align="center">
+<img alt="icon" src="./gui/public/eye.svg" width="150"> 
+
 # Orus media server
 
 Media server with a simple and intuitive interface
+</div>
 
 ![screenshot](./screenshots/movies_page.webp)
 
