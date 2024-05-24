@@ -1,4 +1,5 @@
 
+export CGO_ENABLED:=0
 # Directory where the GUI source code is located
 GUI_DIR := gui
 
@@ -51,5 +52,5 @@ build_dev: main.go
 # Avoid debugging information in the binary file by using the -s and -w flags
 build: main.go build_gui
 	@echo "Building application"
-	go build -ldflags="-s -w" -o $(DIST_DIR)/$(BINARY_NAME) main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o $(DIST_DIR)/$(BINARY_NAME) main.go
 	@echo "Build complete"
