@@ -1,5 +1,3 @@
-
-export CGO_ENABLED:=0
 # Directory where the GUI source code is located
 GUI_DIR := gui
 

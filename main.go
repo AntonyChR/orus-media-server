@@ -27,17 +27,17 @@ var staticContent embed.FS
 
 func main() {
 
-	config, err := config.LoadConfig()
+	cfg, err := config.LoadConfig()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err := infrastructure.CheckDirectories(config.MEDIA_DIR, config.SUBTITLE_DIR); err != nil {
+	if err := infrastructure.CheckDirectories(cfg.MEDIA_DIR, cfg.SUBTITLE_DIR); err != nil {
 		log.Fatal(err)
 	}
 
-	sqliteDb, err := gorm.Open(sqlite.Open(config.DB_PATH), &gorm.Config{})
+	sqliteDb, err := gorm.Open(sqlite.Open(cfg.DB_PATH), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err)
@@ -52,7 +52,7 @@ func main() {
 	sqliteSubtitleRepo := repositoryImplementations.NewSqliteSubtitleRepo(sqliteDb)
 	sqliteTitleInfoRepo := repositoryImplementations.NewSqliteTitleInfoRepo(sqliteDb)
 
-	omdbInfoProvider := repositoryImplementations.NewOmdbProvider("http://www.omdbapi.com", &config.API_KEY)
+	omdbInfoProvider := repositoryImplementations.NewOmdbProvider("http://www.omdbapi.com", &cfg.API_KEY)
 
 	// services
 
@@ -63,8 +63,8 @@ func main() {
 	fileExporer := infrastructure.NewMediaFileExplorer()
 
 	mediaInfoSyncService := services.NewMediaInfoSyncService(
-		config.MEDIA_DIR,
-		config.SUBTITLE_DIR,
+		cfg.MEDIA_DIR,
+		cfg.SUBTITLE_DIR,
 		fileExporer,
 		omdbInfoProvider,
 		videoService,
@@ -74,7 +74,7 @@ func main() {
 
 	// watch media file directory events
 	eventHanlder := infrastructure.NewMediaEventHandlerService(
-		config.MEDIA_DIR,
+		cfg.MEDIA_DIR,
 		titleInfoService,
 		videoService,
 		fileExporer,
@@ -82,7 +82,7 @@ func main() {
 	)
 
 	watcher := infrastructure.NewMediaDirWatcher(
-		config.MEDIA_DIR,
+		cfg.MEDIA_DIR,
 		fileExporer,
 		omdbInfoProvider,
 		eventHanlder,
@@ -93,7 +93,7 @@ func main() {
 	// controllers
 
 	configController := controllers.NewConfigController(
-		&config,
+		&cfg,
 		omdbInfoProvider,
 		titleInfoService,
 		videoService,
@@ -143,7 +143,7 @@ func main() {
 		infoRouter.POST("/video-subtitles/:subtId/:videoId", subtitleController.AssignVideoIdToSubtitles)
 
 		infoRouter.GET("/stream/:videoId", videoController.StreamVideo)
-		infoRouter.StaticFS("/subtitles", http.Dir(config.SUBTITLE_DIR))
+		infoRouter.StaticFS("/subtitles", http.Dir(cfg.SUBTITLE_DIR))
 	}
 
 	// serve embed web app
@@ -165,9 +165,9 @@ func main() {
 		log.Println(err)
 	}
 
-	utils.PrintServerInfo(localIp, config.PORT)
+	utils.PrintServerInfo(localIp, cfg.PORT)
 
-	err = router.Run(config.PORT)
+	err = router.Run(cfg.PORT)
 
 	if err != nil {
 		log.Fatal(err)
