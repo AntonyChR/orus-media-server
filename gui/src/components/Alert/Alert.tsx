@@ -84,9 +84,9 @@ export const Alert: FC<AlertProps> = ({
                             src={icon}
                             alt={alertType}
                             width={30}
-                            className=''
+                            className='mb-2'
                         />
-                        <p style={{ color: textColor }} className='mx-2'>
+                        <p style={{ color: textColor }} className='mx-2 mb-2'>
                             {message}
                         </p>
                     </div>
