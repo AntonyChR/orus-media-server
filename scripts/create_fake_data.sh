@@ -11,7 +11,7 @@ cd media
 touch "The matrix(1999).mp4"
 touch "Godzilla(2014).mp4"
 touch "The lord of the rings(2001).mp4"
-touhc "avatar(2009).mp4"
+touch "avatar(2009).mp4"
 touch "The dark knight(2008).mp4"
 touch "Dune(2021).mp4"
 touch "The shawshank redemption(1994).mp4"
