@@ -10,7 +10,7 @@ interface FloatingInfoProps {
 const FloatingInfo: FC<FloatingInfoProps> = ({ titleInfo }) => {
     return (
         <div
-            className='text-white absolute top-9 right-[-20%] w-[250px] h-max z-10 p-3 space-y-2 rounded-md bg-gray-950 border border-gray-900 animate-fadeIn'
+            className='text-white absolute top-2 right-[-20%] w-[300px] h-max z-10 p-3 space-y-2 rounded-md bg-gray-950 border border-gray-900 animate-fadeIn'
         >
             <p>{titleInfo.Plot}</p>
             <p>
