@@ -44,11 +44,12 @@ hash:
 
 # Include debugging information in the binary file
 build_dev: main.go
-	go build -o $(DIST_DIR)/debug/$(BINARY_NAME) main.go
+	@echo "Building in DEBUG mode"
+	go build -ldflags="-X 'main.BUILD_MODE=DEBUG'" -o $(DIST_DIR)/debug/$(BINARY_NAME) main.go
 
 # Build the application by running build_gui and hash targets
 # Avoid debugging information in the binary file by using the -s and -w flags
 build: main.go build_gui
-	@echo "Building application"
-	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o $(DIST_DIR)/$(BINARY_NAME) main.go
+	@echo "Building in RELEASE mode"
+	GOOS=linux GOARCH=amd64 go build -ldflags="-X 'main.BUILD_MODE=RELEASE' -s -w" -o $(DIST_DIR)/$(BINARY_NAME) main.go
 	@echo "Build complete"

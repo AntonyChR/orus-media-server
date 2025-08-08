@@ -20,12 +20,19 @@ import (
 	gorm "gorm.io/gorm"
 )
 
+var BUILD_MODE string // BUILD_MODE is set at compile time to indicate the build mode
+// It can be "DEBUG" or "RELEASE".
+
 //directive that loads files into the binary at compile time
 
 //go:embed gui/dist/*
 var staticContent embed.FS
 
 func main() {
+
+	if BUILD_MODE == "" {
+		BUILD_MODE = "DEBUG"
+	}
 
 	cfg, err := config.LoadConfig()
 
@@ -106,7 +113,11 @@ func main() {
 	serverLogsController := controllers.NewServerLogsController(logSSeManager)
 
 	// API REST
-	gin.SetMode(gin.ReleaseMode)
+	ginMode := gin.DebugMode
+	if BUILD_MODE == "RELEASE" {
+		ginMode = gin.ReleaseMode
+	}
+	gin.SetMode(ginMode)
 
 	router := gin.Default()
 
