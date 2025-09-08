@@ -18,6 +18,7 @@ import (
 	gin "github.com/gin-gonic/gin"
 	sqlite "gorm.io/driver/sqlite"
 	gorm "gorm.io/gorm"
+	promhttp "github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var BUILD_MODE string // BUILD_MODE is set at compile time to indicate the build mode
@@ -112,6 +113,10 @@ func main() {
 	titleInfoController := controllers.NewTitlInfoController(titleInfoService)
 	serverLogsController := controllers.NewServerLogsController(logSSeManager)
 
+	// Prometheus config
+
+
+
 	// API REST
 	ginMode := gin.DebugMode
 	if BUILD_MODE == "RELEASE" {
@@ -130,6 +135,12 @@ func main() {
 	router.Use(middlewares.RedirectToRoot())
 
 	router.Use(middlewares.HandleReq(logSSeManager.LogsChannel))
+
+	router.Use(middlewares.PrometheusCounter())
+
+	router.GET("/metrics", func(ctx *gin.Context) {
+		promhttp.Handler().ServeHTTP(ctx.Writer, ctx.Request)
+	})
 
 	manageData := router.Group("/api/manage")
 	{
