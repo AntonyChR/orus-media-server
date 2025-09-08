@@ -137,6 +137,7 @@ func main() {
 	router.Use(middlewares.HandleReq(logSSeManager.LogsChannel))
 
 	router.Use(middlewares.PrometheusCounter())
+	router.Use(middlewares.PrometheusRequestDuration())
 
 	router.GET("/metrics", func(ctx *gin.Context) {
 		promhttp.Handler().ServeHTTP(ctx.Writer, ctx.Request)

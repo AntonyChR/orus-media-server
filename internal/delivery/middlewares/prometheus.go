@@ -1,9 +1,11 @@
 package middlewares
 
 import (
+	"strconv"
+	"time"
+
 	gin "github.com/gin-gonic/gin"
 	prometheus "github.com/prometheus/client_golang/prometheus"
-	"strconv"
 )
 
 var (
@@ -14,10 +16,20 @@ var (
 		},
 		[]string{"path", "method", "status"},
 	)
+
+	requestDuration = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:"http_request_duration_miliseconds",
+			Help: "Duration of http requests in miliseconds",
+			Buckets: prometheus.LinearBuckets(0.01, 0.05, 10),
+		},
+		[]string{"path", "method"},
+	)
 )
 
 func init() {
 	prometheus.MustRegister(httpRequestTotal)
+	prometheus.MustRegister(requestDuration)
 }
 
 func PrometheusCounter() gin.HandlerFunc {
@@ -27,7 +39,20 @@ func PrometheusCounter() gin.HandlerFunc {
 		httpRequestTotal.WithLabelValues(
 			ctx.Request.URL.Path,
 			ctx.Request.Method,
-			string(statusStr),
+			statusStr,
 		).Inc()
+	}
+}
+
+func PrometheusRequestDuration() gin.HandlerFunc{
+	return func(ctx *gin.Context) {
+		start := time.Now()
+		ctx.Next()
+		duration := time.Since(start).Milliseconds()
+
+		requestDuration.WithLabelValues(
+			ctx.Request.URL.Path,
+			ctx.Request.Method,
+		).Observe(float64(duration))
 	}
 }
