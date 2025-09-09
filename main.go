@@ -45,7 +45,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	sqliteDb, err := gorm.Open(sqlite.Open(cfg.DB_PATH), &gorm.Config{})
+	sqliteDb, err := gorm.Open(sqlite.Open(cfg.DB_PATH), &gorm.Config{SkipDefaultTransaction: true})
 
 	if err != nil {
 		log.Fatal(err)
@@ -136,6 +136,7 @@ func main() {
 
 	router.Use(middlewares.HandleReq(logSSeManager.LogsChannel))
 
+	// Monitoring
 	router.Use(middlewares.PrometheusCounter())
 	router.Use(middlewares.PrometheusRequestDuration())
 
@@ -143,6 +144,7 @@ func main() {
 		promhttp.Handler().ServeHTTP(ctx.Writer, ctx.Request)
 	})
 
+	// API 
 	manageData := router.Group("/api/manage")
 	{
 		manageData.GET("/reset", configController.ResetDatabase)
