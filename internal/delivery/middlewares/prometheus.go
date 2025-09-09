@@ -23,13 +23,21 @@ var (
 			Help: "Duration of http requests in miliseconds",
 			Buckets: prometheus.LinearBuckets(0.01, 0.05, 10),
 		},
-		[]string{"path", "method"},
+		[]string{"path", "method", "status"},
+	)
+
+	memoryUsage = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "memory_usage",
+			Help: "memory usage of process",
+		},
 	)
 )
 
 func init() {
 	prometheus.MustRegister(httpRequestTotal)
 	prometheus.MustRegister(requestDuration)
+	prometheus.MustRegister(memoryUsage)
 }
 
 func PrometheusCounter() gin.HandlerFunc {
@@ -49,10 +57,17 @@ func PrometheusRequestDuration() gin.HandlerFunc{
 		start := time.Now()
 		ctx.Next()
 		duration := time.Since(start).Milliseconds()
-
+		statusStr:= strconv.Itoa(ctx.Writer.Status())
 		requestDuration.WithLabelValues(
 			ctx.Request.URL.Path,
 			ctx.Request.Method,
+			statusStr,
 		).Observe(float64(duration))
+	}
+}
+
+func PrometheusMemoryUsage() gin.HandlerFunc{
+	return func(ctx *gin.Context) {
+		ctx.Next()
 	}
 }
