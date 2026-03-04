@@ -113,9 +113,6 @@ func main() {
 	titleInfoController := controllers.NewTitlInfoController(titleInfoService)
 	serverLogsController := controllers.NewServerLogsController(logSSeManager)
 
-	// Prometheus config
-
-
 
 	// API REST
 	ginMode := gin.DebugMode
@@ -136,6 +133,7 @@ func main() {
 
 	router.Use(middlewares.HandleReq(logSSeManager.LogsChannel))
 
+	// Prometheus config
 	// Monitoring
 	router.Use(middlewares.PrometheusCounter())
 	router.Use(middlewares.PrometheusRequestDuration())

@@ -116,7 +116,7 @@ func (m *MediaInfoSyncService) ScanSubtitles() error {
 		if file.IsDir() {
 			continue
 		}
-
+		// TODO: check file ext
 		subtitles = append(subtitles, models.Subtitle{
 			Path: filepath.Join(m.SubtitlesDir, file.Name()),
 			Name: file.Name(),
